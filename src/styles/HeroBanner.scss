@@ -1,0 +1,8 @@
+.swiper-slide.hero-banner{
+.ratio{
+    --cz-aspect-ratio: calc(400 / 636 * 100%);
+    &:before{
+        padding-top: var(--cz-aspect-ratio) !important;        
+    }
+}
+}
