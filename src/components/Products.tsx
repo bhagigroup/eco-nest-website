@@ -1,8 +1,34 @@
-import { Link } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import { Breadcrumbs } from "./generic/Breadcrums"
 import { Filters } from "./generic/Filters"
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export const Products = () =>{
+  const params = useParams(); 
+  const selectedProductId = params.id;//get the id from URL 
+
+    //import server URL from .env file
+    const serverUrl = process.env.REACT_APP_SERVER_URL;  
+    //store product data
+    const [selectedProductData, setSelectedProductData] = useState<any>();
+    //fetch product data
+    const handleFetchProductData = async() =>{
+      try{
+        const response = await axios.get(`${serverUrl}/cms/api/v1/product/all-categories/67c2c70994eec86d4951046f`)      
+        const response2 = await axios.get(`${serverUrl}/cms/api/v1/product/get-category-types`)      
+        setSelectedProductData(response?.data)
+      }
+      catch(err:any){
+        console.log("Failed to get product data", err?.message)
+      }
+    }
+    //actions added in following useeffect hook will be executed, when component mounted
+    // useEffect(()=>{
+    //   if(selectedProductId){
+    //   handleFetchProductData();   
+    //   }     
+    // },[selectedProductId])
     return (                
         <main className="content-wrapper">
       <div className="container pb-5 mb-2 mb-sm-3 mb-lg-4 mb-xl-5">

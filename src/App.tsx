@@ -21,7 +21,7 @@ function App() {
       <Routes>
         <Route path="/" element={<><HeroBanner images={swiperImages} thumbnails={swiperThumbnails} description={swiperDescription} price={swiperPrice}/><Categories/>
       <PopularProducts/></>}/>
-        <Route path="/products" element={<Products/>}/>
+        <Route path="/products/:id" element={<Products/>}/>
         <Route path="/shop-product" element={<ShopProduct/>}/>
         <Route path="/checkout" element={<Checkout/>}/>
       </Routes>                     
