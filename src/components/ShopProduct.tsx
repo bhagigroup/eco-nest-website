@@ -1,7 +1,40 @@
+import { useParams } from "react-router-dom";
 import { Breadcrumbs } from "./generic/Breadcrums"
 import { PopularProducts } from "./PopularProduct"
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export const ShopProduct = () =>{
+  const params = useParams(); 
+  const selectedCategoryId = params.id1;//get the id from URL 
+  const selectedCategoryId2 = params.id2;
+
+    //import server URL from .env file
+    const serverUrl = process.env.REACT_APP_SERVER_URL;  
+    //store product data
+    const [selectedProductData, setSelectedProductData] = useState<any>();
+    //fetch product data
+    const handleFetchProductData = async() =>{
+      try{
+        const payload = {
+          "name": "",
+          "categoryId": selectedCategoryId,
+          "subCategoryId": selectedCategoryId2
+      }
+        const response = await axios.get(`${serverUrl}/cms/api/v1/product/${selectedCategoryId}`)              
+        setSelectedProductData(response?.data)        
+      }
+      catch(err:any){
+        console.log("Failed to get product data", err?.message)
+      }
+    }
+    
+    //actions added in following useeffect hook will be executed, when component mounted
+    useEffect(()=>{
+      
+      handleFetchProductData();   
+        
+    },[]);
     return (
         <main className="content-wrapper">
             <div className="container">
@@ -12,23 +45,18 @@ export const ShopProduct = () =>{
           {/*  Gallery */}
           <div className="col-md-7 col-xl-8 pb-4 pb-md-0 mb-2 mb-sm-3 mb-md-0">
             <div className="row row-cols-2 g-3 g-sm-4 g-md-3 g-lg-4">
-              <div className="col">
+              {selectedProductData?.attachments?.map((image:any)=>(
+                <div className="col" key={image?.id}>
                 <a className="hover-effect-scale hover-effect-opacity position-relative d-flex rounded-4 overflow-hidden" href="assets/img/shop/furniture/product/01.png" data-glightbox data-gallery="product-gallery">
                   <i className="ci-zoom-in hover-effect-target fs-3 text-white position-absolute top-50 start-50 translate-middle opacity-0 z-2"></i>
                   <div className="ratio ratio-1x1 hover-effect-target">
-                    <img src="assets/img/shop/furniture/product/01.png" alt="Image"/>
+                    <img src={image?.fileUrl} alt="Image"/>
                   </div>
                 </a>
               </div>
-              <div className="col">
-                <a className="hover-effect-scale hover-effect-opacity position-relative d-flex rounded-4 overflow-hidden" href="assets/img/shop/furniture/product/02.jpg" data-glightbox data-gallery="product-gallery">
-                  <span className="hover-effect-target position-absolute top-0 start-0 w-100 h-100 bg-black bg-opacity-25 opacity-0 z-1"></span>
-                  <i className="ci-zoom-in hover-effect-target fs-3 text-white position-absolute top-50 start-50 translate-middle opacity-0 z-2"></i>
-                  <div className="ratio ratio-1x1 hover-effect-target">
-                    <img src="assets/img/shop/furniture/product/02.jpg" alt="Image"/>
-                  </div>
-                </a>
-              </div>
+              ))}
+              
+      
               <div className="col-12">
                 <div className="collapse d-md-block" id="morePictures">
                   <div className="row row-cols-2 g-3 g-sm-4 g-md-3 g-lg-4 pb-3 pb-sm-4 pb-md-0">
@@ -84,8 +112,8 @@ export const ShopProduct = () =>{
             <div className="sticky-md-top ps-md-2 ps-xl-4">
               <div className="d-none d-md-block" style={{paddingTop: "90px"}}></div>
               <div className="fs-xs text-body-secondary mb-3">V00273124</div>
-              <h1 className="fs-xl fw-medium">Chair with wooden legs 60x100 cm</h1>
-              <div className="h4 fw-bold mb-4">$357.00 <del className="fs-sm fw-normal text-body-tertiary">$416.00</del></div>
+              <h1 className="fs-xl fw-medium">{selectedProductData?.variants[0]?.name}</h1>
+              <div className="h4 fw-bold mb-4">{selectedProductData?.variants[0]?.discountedPrice} <del className="fs-sm fw-normal text-body-tertiary">{selectedProductData?.variants[0]?.mrp}</del></div>
               <ul className="list-unstyled fs-sm text-body-emphasis mb-4">
                 <li>
                   <span className="me-1">Pay 4 interest-free payments of <span className="fw-semibold">$89.00</span> with</span>
@@ -101,24 +129,10 @@ export const ShopProduct = () =>{
 
               {/*  Color options */}
               <div className="mb-4">
-                <label className="form-label fw-semibold pb-1 mb-2">Color: <span className="text-body fw-normal" id="colorOption">Viridian</span></label>
-                <div className="d-flex flex-wrap gap-2" data-binded-label="#colorOption">
-                  <input type="radio" className="btn-check" name="colors" id="viridian" checked/>
-                  <label htmlFor="viridian" className="btn btn-image p-0" data-label="Viridian">
-                    <img src="assets/img/shop/furniture/product/colors/color01.png" width="56" alt="Viridian color"/>
-                    <span className="visually-hidden">Viridian</span>
-                  </label>
-                  <input type="radio" className="btn-check" name="colors" id="green"/>
-                  <label htmlFor="green" className="btn btn-image p-0" data-label="Green">
-                    <img src="assets/img/shop/furniture/product/colors/color02.png" width="56" alt="Green color"/>
-                    <span className="visually-hidden">Green</span>
-                  </label>
-                  <input type="radio" className="btn-check" name="colors" id="blue"/>
-                  <label htmlFor="blue" className="btn btn-image p-0" data-label="Blue">
-                    <img src="assets/img/shop/furniture/product/colors/color03.png" width="56" alt="Blue color"/>
-                    <span className="visually-hidden">Blue</span>
-                  </label>
-                </div>
+                <p className="form-label fw-semibold pb-1 mb-2">Color: <span className="text-body fw-normal" id="colorOption">{selectedProductData?.variants[0]?.attributes[0]?.attributeValue}</span></p>
+                <div><span className="badge badge-pill badge-primary">Primary</span>
+<span className="badge badge-pill badge-secondary">Secondary</span>
+<span className="badge badge-pill badge-success">Success</span></div>
               </div>
 
               {/*  Material select */}

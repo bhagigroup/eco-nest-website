@@ -1,12 +1,15 @@
-import { Link, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import { Breadcrumbs } from "./generic/Breadcrums"
 import { Filters } from "./generic/Filters"
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 export const Products = () =>{
+      //router navigate or redirect
+      const navigate = useNavigate();
   const params = useParams(); 
-  const selectedProductId = params.id;//get the id from URL 
+  const selectedCategoryId = params.id1;//get the id from URL 
+  const selectedCategoryId2 = params.id2;
 
     //import server URL from .env file
     const serverUrl = process.env.REACT_APP_SERVER_URL;  
@@ -15,20 +18,28 @@ export const Products = () =>{
     //fetch product data
     const handleFetchProductData = async() =>{
       try{
-        const response = await axios.get(`${serverUrl}/cms/api/v1/product/all-categories/67c2c70994eec86d4951046f`)      
-        const response2 = await axios.get(`${serverUrl}/cms/api/v1/product/get-category-types`)      
-        setSelectedProductData(response?.data)
+        const payload = {
+          "name": "",
+          "categoryId": selectedCategoryId,
+          "subCategoryId": selectedCategoryId2
+      }
+        const response = await axios.post(`${serverUrl}/cms/api/v1/product/products-by-filter`,payload)              
+        await setSelectedProductData(response?.data)  
+             
       }
       catch(err:any){
         console.log("Failed to get product data", err?.message)
       }
-    }
+    }    
     //actions added in following useeffect hook will be executed, when component mounted
-    // useEffect(()=>{
-    //   if(selectedProductId){
-    //   handleFetchProductData();   
-    //   }     
-    // },[selectedProductId])
+    useEffect(()=>{
+      if(selectedCategoryId && selectedCategoryId2){
+      handleFetchProductData();   
+      }     
+    },[selectedCategoryId]);
+    const handleNavbarLinkClick=(selectedProductId:string)=>{
+      navigate(`/shop-product/${selectedProductId}`)
+    }
     return (                
         <main className="content-wrapper">
       <div className="container pb-5 mb-2 mb-sm-3 mb-lg-4 mb-xl-5">
@@ -41,10 +52,11 @@ export const Products = () =>{
         {/* Item */}
         <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4 gy-5" id="productGrid">
         <div className="col">
-          <div className="animate-underline mb-sm-2">
+          {selectedProductData?.map((product:any)=>(
+            <div className="animate-underline mb-sm-2" key={product?.id}>
             <Link className="hover-effect-opacity ratio ratio-1x1 d-block mb-3" to="/shop-product">
-              <img src="assets/img/shop/furniture/01.png" className="hover-effect-target opacity-100" alt="Product"/>
-              <img src="assets/img/shop/furniture/01-hover.jpg" className="position-absolute top-0 start-0 hover-effect-target opacity-0 rounded-4" alt="Room"/>
+              <img src={product.attachments[0]?.fileUrl} className="hover-effect-target opacity-100" alt="Product"/>
+              <img src={product.attachments[1]?.fileUrl} className="position-absolute top-0 start-0 hover-effect-target opacity-0 rounded-4" alt="Room"/>
             </Link>
             <div className="d-flex gap-2 mb-3">
               <input type="radio" className="btn-check" name="colors-1" id="color-1-1" checked/>
@@ -62,127 +74,19 @@ export const Products = () =>{
             </div>
             <h3 className="mb-2">
               <a className="d-block fs-sm fw-medium text-truncate" href="shop-product-furniture.html">
-                <span className="animate-target">Soft chair with cushion and wooden legs</span>
+                <span className="animate-target">{product?.Name}</span>
               </a>
             </h3>
-            <div className="h6">$245.00</div>
+            <div className="h6">{product?.price}</div>
             <div className="d-flex gap-2">
-              <button type="button" className="btn btn-dark w-100 rounded-pill px-3">Add to cart</button>
+              <button type="button" className="btn btn-dark w-100 rounded-pill px-3" onClick={()=>handleNavbarLinkClick(product?.id)}>Add to cart</button>
               <button type="button" className="btn btn-icon btn-secondary rounded-circle animate-pulse" aria-label="Add to wishlist">
                 <i className="ci-heart fs-base animate-target"></i>
               </button>
             </div>
           </div>
-        </div>
-
-        {/* Item */}
-        <div className="col">
-          <div className="animate-underline mb-sm-2">
-            <a className="hover-effect-opacity ratio ratio-1x1 d-block mb-3" href="shop-product-furniture.html">
-              <img src="assets/img/shop/furniture/02.png" className="hover-effect-target opacity-100" alt="Product"/>
-              <img src="assets/img/shop/furniture/02-hover.jpg" className="position-absolute top-0 start-0 hover-effect-target opacity-0 rounded-4" alt="Room"/>
-            </a>
-            <div className="d-flex gap-2 mb-3">
-              <input type="radio" className="btn-check" name="colors-2" id="color-2-1" checked/>
-              <label htmlFor="color-2-1" className="btn btn-color fs-base" style={{color: "#6a6f7b"}}>
-                <span className="visually-hidden">Gray</span>
-              </label>
-              <input type="radio" className="btn-check" name="colors-2" id="color-2-2"/>
-              <label htmlFor="color-2-2" className="btn btn-color fs-base" style={{color: "#373b42"}}>
-                <span className="visually-hidden">Dark gray</span>
-              </label>
-              <input type="radio" className="btn-check" name="colors-2" id="color-2-3"/>
-              <label htmlFor="color-2-3" className="btn btn-color fs-base" style={{color: "#216aae"}}>
-                <span className="visually-hidden">Blue</span>
-              </label>
-              <input type="radio" className="btn-check" name="colors-2" id="color-2-4"/>
-              <label htmlFor="color-2-4" className="btn btn-color fs-base" style={{color: "#187c1c"}}>
-                <span className="visually-hidden">Green</span>
-              </label>
-            </div>
-            <h3 className="mb-2">
-              <a className="d-block fs-sm fw-medium text-truncate" href="shop-product-furniture.html">
-                <span className="animate-target">Decorative flowerpot with a plant</span>
-              </a>
-            </h3>
-            <div className="h6">$107.50</div>
-            <div className="d-flex gap-2">
-              <button type="button" className="btn btn-dark w-100 rounded-pill px-3">Add to cart</button>
-              <button type="button" className="btn btn-icon btn-secondary rounded-circle animate-pulse" aria-label="Add to wishlist">
-                <i className="ci-heart fs-base animate-target"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Item */}
-        <div className="col">
-          <div className="animate-underline mb-sm-2">
-            <a className="hover-effect-opacity ratio ratio-1x1 d-block mb-3" href="shop-product-furniture.html">
-              <img src="assets/img/shop/furniture/03.png" className="hover-effect-target opacity-100" alt="Product"/>
-              <img src="assets/img/shop/furniture/03-hover.jpg" className="position-absolute top-0 start-0 hover-effect-target opacity-0 rounded-4" alt="Room"/>
-            </a>
-            <div className="d-flex gap-2 mb-3">
-              <input type="radio" className="btn-check" name="colors-3" id="color-3-1" checked/>
-              <label htmlFor="color-3-1" className="btn btn-color fs-base" style={{color: "#a36540"}}>
-                <span className="visually-hidden">Brown</span>
-              </label>
-              <input type="radio" className="btn-check" name="colors-3" id="color-3-2"/>
-              <label htmlFor="color-3-2" className="btn btn-color fs-base" style={{color: "#f8d7b5"}}>
-                <span className="visually-hidden">Beige</span>
-              </label>
-              <input type="radio" className="btn-check" name="colors-3" id="color-3-3"/>
-              <label htmlFor="color-3-3" className="btn btn-color fs-base" style={{color: "#e0e5eb"}}>
-                <span className="visually-hidden">White</span>
-              </label>
-            </div>
-            <h3 className="mb-2">
-              <a className="d-block fs-sm fw-medium text-truncate" href="shop-product-furniture.html">
-                <span className="animate-target">Home fragrance with the aroma of spices</span>
-              </a>
-            </h3>
-            <div className="h6">$24.00</div>
-            <div className="d-flex gap-2">
-              <button type="button" className="btn btn-dark w-100 rounded-pill px-3">Add to cart</button>
-              <button type="button" className="btn btn-icon btn-secondary rounded-circle animate-pulse" aria-label="Add to wishlist">
-                <i className="ci-heart fs-base animate-target"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-       
-
-        {/* Item */}
-        <div className="col">
-          <div className="animate-underline mb-sm-2">
-            <a className="hover-effect-opacity ratio ratio-1x1 d-block mb-3" href="shop-product-furniture.html">
-              <img src="assets/img/shop/furniture/16.png" className="hover-effect-target opacity-100" alt="Product"/>
-              <img src="assets/img/shop/furniture/16-hover.jpg" className="position-absolute top-0 start-0 hover-effect-target opacity-0 rounded-4" alt="Room"/>
-            </a>
-            <div className="d-flex gap-2 mb-3">
-              <input type="radio" className="btn-check" name="colors-16" id="color-16-1" checked/>
-              <label htmlFor="color-16-1" className="btn btn-color fs-base" style={{color: "#b2b8c0"}}>
-                <span className="visually-hidden">Light gray</span>
-              </label>
-              <input type="radio" className="btn-check" name="colors-16" id="color-16-2"/>
-              <label htmlFor="color-16-2" className="btn btn-color fs-base" style={{color: "#6a6662"}}>
-                <span className="visually-hidden">Dark gray</span>
-              </label>
-            </div>
-            <h3 className="mb-2">
-              <a className="d-block fs-sm fw-medium text-truncate" href="shop-product-furniture.html">
-                <span className="animate-target">Soft armchair with wooden legs</span>
-              </a>
-            </h3>
-            <div className="h6">$215.00</div>
-            <div className="d-flex gap-2">
-              <button type="button" className="btn btn-dark w-100 rounded-pill px-3">Add to cart</button>
-              <button type="button" className="btn btn-icon btn-secondary rounded-circle animate-pulse" aria-label="Add to wishlist">
-                <i className="ci-heart fs-base animate-target"></i>
-              </button>
-            </div>
-          </div>
-        </div>
+          ))}
+        </div>       
       </div>
       {/* Pagination */}
       <div className="text-center pt-5 mt-md-2 mt-lg-3 mt-xl-4 mb-xxl-3 mx-auto" style={{maxWidth: "306px"}}>

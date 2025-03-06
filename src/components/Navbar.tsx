@@ -1,8 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 export const Navbar = () =>{
+    //router navigate or redirect
+    const navigate = useNavigate();
       //import server URL from .env file
       const serverUrl = process.env.REACT_APP_SERVER_URL;  
       //store navbar links
@@ -33,6 +35,9 @@ export const Navbar = () =>{
           console.log("Failed to fetch dropdown data", err?.message)
         }
       }
+      const handleNavbarLinkClick=(selectedProductId:string,selectedProductId2:string)=>{
+        navigate(`/products/${selectedProductId}/${selectedProductId2}`)
+      }
     return (
         // Navigation bar (Page header)
         <header className="navbar-sticky sticky-top container z-fixed px-2" data-sticky-element>
@@ -57,7 +62,7 @@ export const Navbar = () =>{
                 <ul className="navbar-nav position-relative">
                 {navbarLinks?.map((navLink:any)=>(
                  <li className="nav-item dropdown position-static me-lg-n1 me-xl-0" key={navLink?.id}>
-                 <a className="nav-link dropdown-toggle fs-sm" href="#" role="button" data-bs-toggle="dropdown" data-bs-trigger="hover" aria-expanded="false" onClick={()=>handleFetchDropdownData(navLink?.id)}>{navLink?.name}</a>
+                 <a className="nav-link dropdown-toggle fs-sm" role="button" data-bs-toggle="dropdown" data-bs-trigger="hover" aria-expanded="false" onClick={()=>handleFetchDropdownData(navLink?.id)}>{navLink?.name}</a>
                  <div className="dropdown-menu p-4">
                  {/* <div className="dropdown-menu p-4" style="--cz-dropdown-spacer: 1rem"> */}
                    <div className="d-flex flex-column flex-lg-row gap-4">
@@ -69,7 +74,7 @@ export const Navbar = () =>{
             <ul className="nav flex-column gap-2 mt-0">
              {category?.subcategories?.map((subCategory:any)=>(
                <li className="d-flex w-100 pt-1" key={subCategory?.id}>
-                <a className="nav-link animate-underline animate-target d-inline fw-normal text-truncate p-0" href="shop-categories-electronics.html">{subCategory?.name}</a>
+                <span className="nav-link animate-underline animate-target d-inline fw-normal text-truncate p-0" onClick={()=>handleNavbarLinkClick(category?.id,subCategory?.id)}>{subCategory?.name}</span>
               </li>
              ))}                 
             </ul>
