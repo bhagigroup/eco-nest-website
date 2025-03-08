@@ -36,7 +36,7 @@ export const Navbar = () =>{
         }
       }
       const handleNavbarLinkClick=(selectedProductId:string,selectedProductId2:string)=>{
-        navigate(`/products/${selectedProductId}/${selectedProductId2}`)
+        navigate(`/products?id1=${selectedProductId}&id2=${selectedProductId2}`)
       }
     return (
         // Navigation bar (Page header)
@@ -61,7 +61,16 @@ export const Navbar = () =>{
               <div className="offcanvas-body pt-3 pb-4 py-lg-0 mx-lg-auto">
                 <ul className="navbar-nav position-relative">
                 {navbarLinks?.map((navLink:any)=>(
-                 <li className="nav-item dropdown position-static me-lg-n1 me-xl-0" key={navLink?.id}>
+                 <li className="nav-item dropdown position-static me-lg-n1 me-xl-0" key={navLink?.id}
+                 onMouseEnter={(e)=>{
+                  e.currentTarget.querySelector(".dropdown-toggle")?.classList.add("show");
+                  e.currentTarget.querySelector(".dropdown-menu")?.classList.add("show");
+                  handleFetchDropdownData(navLink?.id);
+                 }} 
+                 onMouseLeave={(e)=>{
+                  e.currentTarget.querySelector(".dropdown-toggle")?.classList.remove("show");
+                  e.currentTarget.querySelector(".dropdown-menu")?.classList.remove("show")
+                 }}>
                  <a className="nav-link dropdown-toggle fs-sm" role="button" data-bs-toggle="dropdown" data-bs-trigger="hover" aria-expanded="false" onClick={()=>handleFetchDropdownData(navLink?.id)}>{navLink?.name}</a>
                  <div className="dropdown-menu p-4">
                  {/* <div className="dropdown-menu p-4" style="--cz-dropdown-spacer: 1rem"> */}

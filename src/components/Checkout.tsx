@@ -1,6 +1,41 @@
+import { useEffect, useState } from "react";
 import { Breadcrumbs } from "./generic/Breadcrums"
+import axios from "axios";
+import { useParams } from "react-router-dom";
+import { formatPrice } from "../utility/formatCurrency";
 
 export const Checkout = () =>{
+  const params = useParams(); 
+  const productId = params.id1;//get the id from URL 
+  const variantId = params.id2;
+  const userId = params.id3;
+
+    //import server URL from .env file
+    const serverUrl = process.env.REACT_APP_SERVER_URL;  
+    //store product data
+    const [orderData, setOrderData] = useState<any>();
+    //fetch product data
+    const handleFetchProductData = async() =>{
+      try{
+        const payload = {
+          "productId": productId,
+          "variantId": variantId,
+          "quantity": 1,
+          "userId":userId,
+          "cartId":""
+      }
+        const response = await axios.post(`${serverUrl}/cms/api/v1/order/add-to-cart`,payload)              
+        setOrderData(response?.data)        
+      }
+      catch(err:any){
+        console.log("Failed to get data", err?.message)
+      }
+    }
+    
+    //actions added in following useeffect hook will be executed, when component mounted
+    useEffect(()=>{      
+      handleFetchProductData();           
+    },[]);
    return (
     <section className="container pb-5 mb-2 mb-md-3 mb-lg-4 mb-xl-5">
         <Breadcrumbs item1="Home" item2="Shop" item3="Cart"/>
@@ -37,20 +72,21 @@ export const Checkout = () =>{
             <tbody className="align-middle">
 
               {/* Item */}
-              <tr>
+              {orderData?.itemList?.map((data:any)=>(
+                <tr>
                 <td className="py-3 ps-0">
                   <div className="d-flex align-items-center">
                     <a className="flex-shrink-0" href="shop-product-general-electronics.html">
-                      <img src="assets/img/shop/electronics/thumbs/08.png" width="110" alt="iPhone 14"/>
+                      <img src={data?.image?.fileUrl} width="110" alt={data?.productName}/>
                     </a>
                     <div className="w-100 min-w-0 ps-2 ps-xl-3">
                       <h5 className="d-flex animate-underline mb-2">
-                        <a className="d-block fs-sm fw-medium text-truncate animate-target" href="shop-product-general-electronics.html">Apple iPhone 14 128GB</a>
+                        <a className="d-block fs-sm fw-medium text-truncate animate-target" href="shop-product-general-electronics.html">{data?.productName}</a>
                       </h5>
                       <ul className="list-unstyled gap-1 fs-xs mb-0">
-                        <li><span className="text-body-secondary">Color:</span> <span className="text-dark-emphasis fw-medium">White</span></li>
-                        <li><span className="text-body-secondary">Model:</span> <span className="text-dark-emphasis fw-medium">128GB</span></li>
-                        <li className="d-xl-none"><span className="text-body-secondary">Price:</span> <span className="text-dark-emphasis fw-medium">$899.00</span></li>
+                        {/* <li><span className="text-body-secondary">Color:</span> <span className="text-dark-emphasis fw-medium">White</span></li>
+                        <li><span className="text-body-secondary">Model:</span> <span className="text-dark-emphasis fw-medium">128GB</span></li> */}
+                        <li className="d-xl-none"><span className="text-body-secondary">Price:</span> <span className="text-dark-emphasis fw-medium">{data?.subTotal}</span></li>
                       </ul>
                       <div className="count-input rounded-2 d-md-none mt-3">
                         <button type="button" className="btn btn-sm btn-icon" data-decrement aria-label="Decrement quantity">
@@ -64,7 +100,7 @@ export const Checkout = () =>{
                     </div>
                   </div>
                 </td>
-                <td className="h6 py-3 d-none d-xl-table-cell">$899.00</td>
+                <td className="h6 py-3 d-none d-xl-table-cell">{formatPrice(data?.subTotal)}</td>
                 <td className="py-3 d-none d-md-table-cell">
                   <div className="count-input">
                     <button type="button" className="btn btn-icon" data-decrement aria-label="Decrement quantity">
@@ -76,104 +112,12 @@ export const Checkout = () =>{
                     </button>
                   </div>
                 </td>
-                <td className="h6 py-3 d-none d-md-table-cell">$899.00</td>
+                <td className="h6 py-3 d-none d-md-table-cell">{formatPrice(data?.subTotal)}</td>
                 <td className="text-end py-3 px-0">
                   <button type="button" className="btn-close fs-sm" data-bs-toggle="tooltip" data-bs-custom-class="tooltip-sm" data-bs-title="Remove" aria-label="Remove from cart"></button>
                 </td>
               </tr>
-
-              {/* Item */}
-              <tr>
-                <td className="py-3 ps-0">
-                  <div className="d-flex align-items-center">
-                    <a className="position-relative flex-shrink-0" href="shop-product-general-electronics.html">
-                      <span className="badge text-bg-danger position-absolute top-0 start-0">-10%</span>
-                      <img src="assets/img/shop/electronics/thumbs/09.png" width="110" alt="iPad Pro"/>
-                    </a>
-                    <div className="w-100 min-w-0 ps-2 ps-xl-3">
-                      <h5 className="d-flex animate-underline mb-2">
-                        <a className="d-block fs-sm fw-medium text-truncate animate-target" href="shop-product-general-electronics.html">Tablet Apple iPad Pro M2</a>
-                      </h5>
-                      <ul className="list-unstyled gap-1 fs-xs mb-0">
-                        <li><span className="text-body-secondary">Color:</span> <span className="text-dark-emphasis fw-medium">Black</span></li>
-                        <li><span className="text-body-secondary">Model:</span> <span className="text-dark-emphasis fw-medium">256GB</span></li>
-                        <li className="d-xl-none"><span className="text-body-secondary">Price:</span> <span className="text-dark-emphasis fw-medium">$989.00 <del className="text-body-tertiary fw-normal">$1,099.00</del></span></li>
-                      </ul>
-                      <div className="count-input rounded-2 d-md-none mt-3">
-                        <button type="button" className="btn btn-sm btn-icon" data-decrement aria-label="Decrement quantity">
-                          <i className="ci-minus"></i>
-                        </button>
-                        <input type="number" className="form-control form-control-sm" value="1" readOnly/>
-                        <button type="button" className="btn btn-sm btn-icon" data-increment aria-label="Increment quantity">
-                          <i className="ci-plus"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td className="h6 py-3 d-none d-xl-table-cell">$989.00 <del className="text-body-tertiary fs-xs fw-normal">$1,099.00</del></td>
-                <td className="py-3 d-none d-md-table-cell">
-                  <div className="count-input">
-                    <button type="button" className="btn btn-icon" data-decrement aria-label="Decrement quantity">
-                      <i className="ci-minus"></i>
-                    </button>
-                    <input type="number" className="form-control" value="1" readOnly/>
-                    <button type="button" className="btn btn-icon" data-increment aria-label="Increment quantity">
-                      <i className="ci-plus"></i>
-                    </button>
-                  </div>
-                </td>
-                <td className="h6 py-3 d-none d-md-table-cell">$989.00</td>
-                <td className="text-end py-3 px-0">
-                  <button type="button" className="btn-close fs-sm" data-bs-toggle="tooltip" data-bs-custom-class="tooltip-sm" data-bs-title="Remove" aria-label="Remove from cart"></button>
-                </td>
-              </tr>
-
-              {/* Item */}
-              <tr>
-                <td className="py-3 ps-0">
-                  <div className="d-flex align-items-center">
-                    <a className="flex-shrink-0" href="shop-product-general-electronics.html">
-                      <img src="assets/img/shop/electronics/thumbs/01.png" width="110" alt="Smart Watch"/>
-                    </a>
-                    <div className="w-100 min-w-0 ps-2 ps-xl-3">
-                      <h5 className="d-flex animate-underline mb-2">
-                        <a className="d-block fs-sm fw-medium text-truncate animate-target" href="shop-product-general-electronics.html">Smart Watch Series 7</a>
-                      </h5>
-                      <ul className="list-unstyled gap-1 fs-xs mb-0">
-                        <li><span className="text-body-secondary">Color:</span> <span className="text-dark-emphasis fw-medium">White</span></li>
-                        <li><span className="text-body-secondary">Model:</span> <span className="text-dark-emphasis fw-medium">44 mm</span></li>
-                        <li className="d-xl-none"><span className="text-body-secondary">Price:</span> <span className="text-dark-emphasis fw-medium">$429.00</span></li>
-                      </ul>
-                      <div className="count-input rounded-2 d-md-none mt-3">
-                        <button type="button" className="btn btn-sm btn-icon" data-decrement aria-label="Decrement quantity">
-                          <i className="ci-minus"></i>
-                        </button>
-                        <input type="number" className="form-control form-control-sm" value="1" readOnly/>
-                        <button type="button" className="btn btn-sm btn-icon" data-increment aria-label="Increment quantity">
-                          <i className="ci-plus"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td className="h6 py-3 d-none d-xl-table-cell">$429.00</td>
-                <td className="py-3 d-none d-md-table-cell">
-                  <div className="count-input">
-                    <button type="button" className="btn btn-icon" data-decrement aria-label="Decrement quantity">
-                      <i className="ci-minus"></i>
-                    </button>
-                    <input type="number" className="form-control" value="1" readOnly/>
-                    <button type="button" className="btn btn-icon" data-increment aria-label="Increment quantity">
-                      <i className="ci-plus"></i>
-                    </button>
-                  </div>
-                </td>
-                <td className="h6 py-3 d-none d-md-table-cell">$429.00</td>
-                <td className="text-end py-3 px-0">
-                  <button type="button" className="btn-close fs-sm" data-bs-toggle="tooltip" data-bs-custom-class="tooltip-sm" data-bs-title="Remove" aria-label="Remove from cart"></button>
-                </td>
-              </tr>
+              ))}            
             </tbody>
           </table>
 
@@ -195,8 +139,8 @@ export const Checkout = () =>{
               <h5 className="border-bottom pb-4 mb-4">Order summary</h5>
               <ul className="list-unstyled fs-sm gap-3 mb-0">
                 <li className="d-flex justify-content-between">
-                  Subtotal (3 items):
-                  <span className="text-dark-emphasis fw-medium">$2,427.00</span>
+                  Subtotal `{orderData?.itemList?.length}` items:
+                  <span className="text-dark-emphasis fw-medium">{formatPrice(orderData?.total)}</span>
                 </li>
                 <li className="d-flex justify-content-between">
                   Saving:
@@ -214,7 +158,7 @@ export const Checkout = () =>{
               <div className="border-top pt-4 mt-4">
                 <div className="d-flex justify-content-between mb-3">
                   <span className="fs-sm">Estimated total:</span>
-                  <span className="h5 mb-0">$2,390.40</span>
+                  <span className="h5 mb-0">{formatPrice(orderData?.total)}</span>
                 </div>
                 <a className="btn btn-lg btn-primary w-100" href="checkout-v1-delivery-1.html">
                   Proceed to checkout

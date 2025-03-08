@@ -25,7 +25,7 @@ export const Categories = () =>{
   },[])
   //Navigate to product page, and add selected/ clicked category id
   const handleCategoryClick=(selectedProductId:string)=>{
-    navigate(`/products/${selectedProductId}`)
+    navigate(`/products?id1=${selectedProductId}`)
   }
     return (        
         <section className="container py-5 my-2 my-sm-3 mb-md-2 mt-lg-4 my-xl-5">
@@ -44,25 +44,7 @@ export const Categories = () =>{
                          </div>
                        </div>
                        <h3 className="category-card-title h6 text-truncate">{category?.name}</h3>
-                       <p className="text-truncate nav-link justify-content-center fs-sm hover-effect-underline p-0 text-center">{category?.description}</p>
-                     {/* </Link> */}
-                     {/* <ul className="category-card-list nav w-100 flex-column gap-1 pt-3">
-                       <li className="w-100">
-                         <Link className="nav-link justify-content-center min-w-0 w-100 fw-normal hover-effect-underline p-0" to="shop-catalog-furniture.html">
-                           <span className="text-truncate">{category?.item1 || "Item 1"}</span>
-                         </Link>
-                       </li>
-                       <li className="w-100">
-                         <Link className="nav-link justify-content-center min-w-0 w-100 fw-normal hover-effect-underline p-0" to="shop-catalog-furniture.html">
-                           <span className="text-truncate">{category?.item1 || "Item 2"}</span>
-                         </Link>
-                       </li>
-                       <li className="w-100">
-                         <Link className="nav-link justify-content-center min-w-0 w-100 fw-normal hover-effect-underline p-0" to="shop-catalog-furniture.html">
-                           <span className="text-truncate">{category?.item3 || "Item 3"}</span>
-                         </Link>
-                       </li>
-                     </ul> */}
+                       <p className="text-truncate nav-link justify-content-center fs-sm hover-effect-underline p-0 text-center">{category?.description}</p>                   
                    </div>
                  </div>
                </div>

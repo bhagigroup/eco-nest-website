@@ -1,15 +1,16 @@
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { Link, useNavigate, useSearchParams } from "react-router-dom"
 import { Breadcrumbs } from "./generic/Breadcrums"
 import { Filters } from "./generic/Filters"
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { formatPrice } from "../utility/formatCurrency";
 
 export const Products = () =>{
       //router navigate or redirect
       const navigate = useNavigate();
-  const params = useParams(); 
-  const selectedCategoryId = params.id1;//get the id from URL 
-  const selectedCategoryId2 = params.id2;
+  const [searchParams] = useSearchParams(); 
+  const selectedCategoryId = searchParams.get("id1");//get the id from URL 
+  const selectedCategoryId2 = searchParams.get("id2");
 
     //import server URL from .env file
     const serverUrl = process.env.REACT_APP_SERVER_URL;  
@@ -33,7 +34,7 @@ export const Products = () =>{
     }    
     //actions added in following useeffect hook will be executed, when component mounted
     useEffect(()=>{
-      if(selectedCategoryId && selectedCategoryId2){
+      if(selectedCategoryId){
       handleFetchProductData();   
       }     
     },[selectedCategoryId]);
@@ -51,10 +52,10 @@ export const Products = () =>{
 <Filters/>
         {/* Item */}
         <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4 gy-5" id="productGrid">
-        <div className="col">
-          {selectedProductData?.map((product:any)=>(
+        {selectedProductData ? selectedProductData?.map((product:any)=>(<div className="col">
+          
             <div className="animate-underline mb-sm-2" key={product?.id}>
-            <Link className="hover-effect-opacity ratio ratio-1x1 d-block mb-3" to="/shop-product">
+            <Link className={`${product.attachments[1]?.fileUrl ? "hover-effect-opacity" : null} ratio ratio-1x1 d-block mb-3`} to="/shop-product">
               <img src={product.attachments[0]?.fileUrl} className="hover-effect-target opacity-100" alt="Product"/>
               <img src={product.attachments[1]?.fileUrl} className="position-absolute top-0 start-0 hover-effect-target opacity-0 rounded-4" alt="Room"/>
             </Link>
@@ -77,16 +78,16 @@ export const Products = () =>{
                 <span className="animate-target">{product?.Name}</span>
               </a>
             </h3>
-            <div className="h6">{product?.price}</div>
+            <div className="h6">{formatPrice(product?.price)}</div>
             <div className="d-flex gap-2">
-              <button type="button" className="btn btn-dark w-100 rounded-pill px-3" onClick={()=>handleNavbarLinkClick(product?.id)}>Add to cart</button>
+              <button type="button" className="btn btn-dark w-100 rounded-pill px-3" onClick={()=>handleNavbarLinkClick(product?.id)}>View Options</button>
               <button type="button" className="btn btn-icon btn-secondary rounded-circle animate-pulse" aria-label="Add to wishlist">
                 <i className="ci-heart fs-base animate-target"></i>
               </button>
             </div>
           </div>
-          ))}
-        </div>       
+          
+        </div>  )) : <p className="fs-sm">Loading...</p>}     
       </div>
       {/* Pagination */}
       <div className="text-center pt-5 mt-md-2 mt-lg-3 mt-xl-4 mb-xxl-3 mx-auto" style={{maxWidth: "306px"}}>

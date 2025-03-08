@@ -1,8 +1,9 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Breadcrumbs } from "./generic/Breadcrums"
 import { PopularProducts } from "./PopularProduct"
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { formatPrice } from "../utility/formatCurrency";
 
 export const ShopProduct = () =>{
   const params = useParams(); 
@@ -30,11 +31,15 @@ export const ShopProduct = () =>{
     }
     
     //actions added in following useeffect hook will be executed, when component mounted
-    useEffect(()=>{
-      
-      handleFetchProductData();   
-        
+    useEffect(()=>{      
+      handleFetchProductData();           
     },[]);
+        //router navigate or redirect
+        const navigate = useNavigate();
+    //handle Navigation
+    const handleCheckoutNavigation=(selectedProductId:string,selectedProductId2:string,userId:string)=>{
+      navigate(`/checkout/${selectedProductId}/${selectedProductId2}/${userId}`)
+    }
     return (
         <main className="content-wrapper">
             <div className="container">
@@ -57,7 +62,7 @@ export const ShopProduct = () =>{
               ))}
               
       
-              <div className="col-12">
+              {/* <div className="col-12">
                 <div className="collapse d-md-block" id="morePictures">
                   <div className="row row-cols-2 g-3 g-sm-4 g-md-3 g-lg-4 pb-3 pb-sm-4 pb-md-0">
                     <div className="col">
@@ -101,7 +106,7 @@ export const ShopProduct = () =>{
                 <button type="button" className="btn btn-lg btn-outline-secondary w-100 collapsed d-md-none" data-bs-toggle="collapse" data-bs-target="#morePictures" data-label-collapsed="Show more pictures" data-label-expanded="Show less pictures" aria-expanded="false" aria-controls="morePictures" aria-label="Show / hide pictures">
                   <i className="collapse-toggle-icon ci-chevron-down fs-lg ms-2 me-n2"></i>
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -113,7 +118,7 @@ export const ShopProduct = () =>{
               <div className="d-none d-md-block" style={{paddingTop: "90px"}}></div>
               <div className="fs-xs text-body-secondary mb-3">V00273124</div>
               <h1 className="fs-xl fw-medium">{selectedProductData?.variants[0]?.name}</h1>
-              <div className="h4 fw-bold mb-4">{selectedProductData?.variants[0]?.discountedPrice} <del className="fs-sm fw-normal text-body-tertiary">{selectedProductData?.variants[0]?.mrp}</del></div>
+              <div className="h4 fw-bold mb-4">{formatPrice(selectedProductData?.variants[0]?.discountedPrice)} <del className="fs-sm fw-normal text-body-tertiary">{selectedProductData?.variants[0]?.mrp}</del></div>
               <ul className="list-unstyled fs-sm text-body-emphasis mb-4">
                 <li>
                   <span className="me-1">Pay 4 interest-free payments of <span className="fw-semibold">$89.00</span> with</span>
@@ -153,7 +158,7 @@ export const ShopProduct = () =>{
 
               {/*  Add to cart + Wishlist buttons */}
               <div className="d-flex gap-3 pb-4 mb-2 mb-lg-3">
-                <button type="button" className="btn btn-lg btn-dark w-100 rounded-pill">Add to cart</button>
+                <button type="button" className="btn btn-lg btn-dark w-100 rounded-pill" onClick={()=>handleCheckoutNavigation(selectedProductData?.id,selectedProductData?.variants[0]?.id,"67b9c5f1e4b3771fff37bfdd")}>Add to cart</button>
                 <button type="button" className="btn btn-icon btn-lg btn-secondary rounded-circle animate-pulse" aria-label="Add to Wishlist">
                   <i className="ci-heart fs-lg animate-target"></i>
                 </button>

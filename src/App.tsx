@@ -21,9 +21,10 @@ function App() {
       <Routes>
         <Route path="/" element={<><HeroBanner images={swiperImages} thumbnails={swiperThumbnails} description={swiperDescription} price={swiperPrice}/><Categories/>
       <PopularProducts/></>}/>
-        <Route path="/products/:id1/:id2" element={<Products/>}/>
+        <Route path="/products" element={<Products/>}/>
         <Route path="/shop-product/:id1" element={<ShopProduct/>}/>
-        <Route path="/checkout" element={<Checkout/>}/>
+        <Route path="/checkout/:id1/:id2/:id3" element={<Checkout/>}/>
+        <Route path="*" element={<h2>404 - Page Not Found</h2>}/>
       </Routes>                     
       
       <Footer/>
