@@ -49,3 +49,11 @@
 .swiper-wrapper{
 gap:10px;
 }
+
+.cz-aspect-ratio{
+    --cz-aspect-ratio: calc(1030 / 1032 * 100%);
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}

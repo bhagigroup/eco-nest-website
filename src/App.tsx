@@ -13,6 +13,8 @@ import { Products } from './components/Products';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { ShopProduct } from './components/ShopProduct';
 import { Checkout } from './components/Checkout';
+import SignUp from './components/SignUp';
+import LogIn from './components/LogIn';
 function App() {
   return (
     <div className="App"> 
@@ -21,9 +23,11 @@ function App() {
       <Routes>
         <Route path="/" element={<><HeroBanner images={swiperImages} thumbnails={swiperThumbnails} description={swiperDescription} price={swiperPrice}/><Categories/>
       <PopularProducts/></>}/>
+        <Route path="/signup" element={<SignUp/>}/>
+        <Route path="login" element={<LogIn/>}/>
         <Route path="/products" element={<Products/>}/>
         <Route path="/shop-product/:id1" element={<ShopProduct/>}/>
-        <Route path="/checkout/:id1/:id2/:id3" element={<Checkout/>}/>
+        <Route path="/checkout" element={<Checkout/>}/>
         <Route path="*" element={<h2>404 - Page Not Found</h2>}/>
       </Routes>                     
       

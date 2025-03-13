@@ -38,7 +38,7 @@ export const Products = () =>{
       handleFetchProductData();   
       }     
     },[selectedCategoryId]);
-    const handleNavbarLinkClick=(selectedProductId:string)=>{
+    const handleNavigation=(selectedProductId:string)=>{
       navigate(`/shop-product/${selectedProductId}`)
     }
     return (                
@@ -80,7 +80,7 @@ export const Products = () =>{
             </h3>
             <div className="h6">{formatPrice(product?.price)}</div>
             <div className="d-flex gap-2">
-              <button type="button" className="btn btn-dark w-100 rounded-pill px-3" onClick={()=>handleNavbarLinkClick(product?.id)}>View Options</button>
+              <button type="button" className="btn btn-dark w-100 rounded-pill px-3" onClick={()=>handleNavigation(product?.id)}>View Options</button>
               <button type="button" className="btn btn-icon btn-secondary rounded-circle animate-pulse" aria-label="Add to wishlist">
                 <i className="ci-heart fs-base animate-target"></i>
               </button>

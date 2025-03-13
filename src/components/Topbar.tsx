@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom"
+
 export const Topbar = () =>{
     return (        
         <div className="container position-relative d-flex justify-content-between z-1 py-3">
@@ -12,6 +14,12 @@ export const Topbar = () =>{
             </li>
             <li className="animate-underline">
               <a className="nav-link animate-target fs-xs p-0" href="#!">Account</a>
+            </li>
+            <li className="animate-underline">
+              <Link className="nav-link animate-target fs-xs p-0" to="/login">Login</Link>
+            </li>
+            <li className="animate-underline">
+              <Link className="nav-link animate-target fs-xs p-0" to="/signup">Signup</Link>
             </li>
           </ul>
         </div>

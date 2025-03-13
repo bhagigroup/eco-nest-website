@@ -35,9 +35,16 @@ export const Navbar = () =>{
           console.log("Failed to fetch dropdown data", err?.message)
         }
       }
-      const handleNavbarLinkClick=(selectedProductId:string,selectedProductId2:string)=>{
-        navigate(`/products?id1=${selectedProductId}&id2=${selectedProductId2}`)
+      const handleNavbarLinkClick=(selectedProductId:string,selectedProductId2?:string)=>{
+        navigate(`/products?id1=${selectedProductId}&id2=${selectedProductId2 ? selectedProductId2 : ""}`)
       }
+          //handle cart Navigation
+    const handleCheckoutNavigation=()=>{
+      let selectedProductId = "";
+      let selectedProductId2 = "";
+      let userId = "67b9c5f1e4b3771fff37bfdd";
+      navigate(`/checkout?id1=${selectedProductId}&id2=${selectedProductId2}&id3=${userId}`)
+    }
     return (
         // Navigation bar (Page header)
         <header className="navbar-sticky sticky-top container z-fixed px-2" data-sticky-element>
@@ -60,7 +67,7 @@ export const Navbar = () =>{
               </div>
               <div className="offcanvas-body pt-3 pb-4 py-lg-0 mx-lg-auto">
                 <ul className="navbar-nav position-relative">
-                {navbarLinks?.map((navLink:any)=>(
+                {navbarLinks ? navbarLinks?.map((navLink:any)=>(
                  <li className="nav-item dropdown position-static me-lg-n1 me-xl-0" key={navLink?.id}
                  onMouseEnter={(e)=>{
                   e.currentTarget.querySelector(".dropdown-toggle")?.classList.add("show");
@@ -78,11 +85,11 @@ export const Navbar = () =>{
                      <div style={{minWidth:"380px", display:"flex", flexWrap:"wrap"}}>
                        {dropdownLinks?.map((category:any)=>(
                          // style={{minWidth: `${index <=3 ? "" : index >3 && index <=6 ? "190px" : ""} `}}
-                         <div key={category?.id} className="mb-3" style={{boxSizing:"border-box",flexBasis:"50%"}}>
-            <div className="h6 mb-2">{category?.name}</div>
+                         <div key={category?.id} className="mb-3 cursor-pointer" style={{boxSizing:"border-box",flexBasis:"50%"}}>
+            <div className="h6 mb-2" onClick={()=>handleNavbarLinkClick(category?.id)}>{category?.name}</div>
             <ul className="nav flex-column gap-2 mt-0">
              {category?.subcategories?.map((subCategory:any)=>(
-               <li className="d-flex w-100 pt-1" key={subCategory?.id}>
+               <li className="d-flex w-100 pt-1 cursor-pointer" key={subCategory?.id}>
                 <span className="nav-link animate-underline animate-target d-inline fw-normal text-truncate p-0" onClick={()=>handleNavbarLinkClick(category?.id,subCategory?.id)}>{subCategory?.name}</span>
               </li>
              ))}                 
@@ -93,7 +100,7 @@ export const Navbar = () =>{
                    </div>
                  </div>
                </li>
-                 ))}
+                 )): <p>No data available</p>}
               
            
                 </ul>
@@ -143,7 +150,7 @@ export const Navbar = () =>{
               </div>
     
               {/* Cart button */}
-              <button type="button" className="btn btn-icon fs-lg btn-outline-secondary border-0 rounded-circle animate-scale me-2" data-bs-toggle="offcanvas" data-bs-target="#shoppingCart" aria-controls="shoppingCart" aria-label="Shopping cart">
+              <button type="button" onClick={handleCheckoutNavigation} className="btn btn-icon fs-lg btn-outline-secondary border-0 rounded-circle animate-scale me-2" aria-label="Shopping cart">
                 <i className="ci-shopping-cart animate-target"></i>
               </button>
     

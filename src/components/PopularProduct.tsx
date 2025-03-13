@@ -40,8 +40,8 @@ export const PopularProducts = () =>{
        handleFetchProductData();   
        
      },[]);
-     const handleCheckoutNavigation=(productId:string,variantId:string,userId:string)=>{
-      navigate(`/checkout/${productId}/${variantId}/${userId}`)
+     const handleNavigation=(selectedProductId:string)=>{
+      navigate(`/shop-product/${selectedProductId}`)
     }
     return (
         <section className="container pb-5 mt-md-n2 mb-2 mb-sm-3 mb-md-4 mb-xl-5">
@@ -76,11 +76,11 @@ export const PopularProducts = () =>{
                 >
               {/* slides */}
 
-                {popularProductsData?.map((product:any) => (
+                {popularProductsData ? popularProductsData?.map((product:any) => (
                                     <SwiperSlide key={product?.id}>
                                       <div className="swiper-slide">
-                <div className="animate-underline">
-                  <a className={`${product?.attachments[1]?.fileUrl ? "hover-effect-opacity":null} ratio ratio-1x1 d-block mb-3`} href="shop-product-furniture.html">
+                <div className="animate-underline cursor-pointer" onClick={()=>handleNavigation(product?.id)}>
+                  <a className={`${product?.attachments[1]?.fileUrl ? "hover-effect-opacity":null} ratio ratio-1x1 d-block mb-3`}>
                     <img src={product?.attachments[0]?.fileUrl} className="hover-effect-target opacity-100" alt={product?.Name}/>
                     <img src={product?.attachments[1]?.fileUrl} className="position-absolute top-0 start-0 hover-effect-target opacity-0 rounded-4" alt={product?.Name}/>
                   </a>
@@ -99,13 +99,13 @@ export const PopularProducts = () =>{
                     </label>
                   </div>
                   <h3 className="mb-2 text-left">
-                    <a className="d-block fs-sm fw-medium text-truncate" href="shop-product-furniture.html">
+                    <a className="d-block fs-sm fw-medium text-truncate">
                       <span className="animate-target">{product.Description}</span>
                     </a>
                   </h3>
                   <div className="h6 text-left">{formatPrice(product.price)}</div>
                   <div className="d-flex gap-2">
-                    <button type="button" className="btn btn-dark w-100 rounded-pill px-3" onClick={()=>handleCheckoutNavigation(product?.id,product?.variants[0]?.id,"67b9c5f1e4b3771fff37bfdd")}>Add to cart</button>
+                    <button type="button" className="btn btn-dark w-100 rounded-pill px-3">View variants</button>
                     <button type="button" className="btn btn-icon btn-secondary rounded-circle animate-pulse" aria-label="Add to wishlist">
                       <i className="ci-heart fs-base animate-target"></i>
                     </button>
@@ -113,7 +113,7 @@ export const PopularProducts = () =>{
                 </div>
               </div>
                                     </SwiperSlide>
-                                  ))}
+                                  )):<p>No data available</p>}
                    
             
             </Swiper>

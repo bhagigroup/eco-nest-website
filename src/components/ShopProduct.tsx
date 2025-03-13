@@ -33,7 +33,7 @@ export const ShopProduct = () =>{
     //actions added in following useeffect hook will be executed, when component mounted
     useEffect(()=>{      
       handleFetchProductData();           
-    },[]);
+    },[selectedCategoryId]);
         //router navigate or redirect
         const navigate = useNavigate();
     //handle Navigation
@@ -50,9 +50,9 @@ export const ShopProduct = () =>{
           {/*  Gallery */}
           <div className="col-md-7 col-xl-8 pb-4 pb-md-0 mb-2 mb-sm-3 mb-md-0">
             <div className="row row-cols-2 g-3 g-sm-4 g-md-3 g-lg-4">
-              {selectedProductData?.attachments?.map((image:any)=>(
+              {selectedProductData?.variants[0]?.attachments?.map((image:any)=>(
                 <div className="col" key={image?.id}>
-                <a className="hover-effect-scale hover-effect-opacity position-relative d-flex rounded-4 overflow-hidden" href="assets/img/shop/furniture/product/01.png" data-glightbox data-gallery="product-gallery">
+                <a className="hover-effect-scale hover-effect-opacity position-relative d-flex rounded-4 overflow-hidden" href={image?.fileUrl} data-glightbox data-gallery="product-gallery">
                   <i className="ci-zoom-in hover-effect-target fs-3 text-white position-absolute top-50 start-50 translate-middle opacity-0 z-2"></i>
                   <div className="ratio ratio-1x1 hover-effect-target">
                     <img src={image?.fileUrl} alt="Image"/>
@@ -62,51 +62,25 @@ export const ShopProduct = () =>{
               ))}
               
       
-              {/* <div className="col-12">
+              <div className="col-12">
                 <div className="collapse d-md-block" id="morePictures">
                   <div className="row row-cols-2 g-3 g-sm-4 g-md-3 g-lg-4 pb-3 pb-sm-4 pb-md-0">
-                    <div className="col">
-                      <a className="hover-effect-scale hover-effect-opacity position-relative d-flex rounded-4 overflow-hidden" href="assets/img/shop/furniture/product/03.jpg" data-glightbox data-gallery="product-gallery">
-                        <span className="hover-effect-target position-absolute top-0 start-0 w-100 h-100 bg-black bg-opacity-25 opacity-0 z-1"></span>
-                        <i className="ci-zoom-in hover-effect-target fs-3 text-white position-absolute top-50 start-50 translate-middle opacity-0 z-2"></i>
-                        <div className="ratio ratio-1x1 hover-effect-target">
-                          <img src="assets/img/shop/furniture/product/03.jpg" alt="Image"/>
-                        </div>
-                      </a>
-                    </div>
-                    <div className="col">
-                      <a className="hover-effect-scale hover-effect-opacity position-relative d-flex rounded-4 overflow-hidden" href="assets/img/shop/furniture/product/04.jpg" data-glightbox data-gallery="product-gallery">
-                        <span className="hover-effect-target position-absolute top-0 start-0 w-100 h-100 bg-black bg-opacity-25 opacity-0 z-1"></span>
-                        <i className="ci-zoom-in hover-effect-target fs-3 text-white position-absolute top-50 start-50 translate-middle opacity-0 z-2"></i>
-                        <div className="ratio ratio-1x1 hover-effect-target">
-                          <img src="assets/img/shop/furniture/product/04.jpg" alt="Image"/>
-                        </div>
-                      </a>
-                    </div>
-                    <div className="col">
-                      <a className="hover-effect-scale hover-effect-opacity position-relative d-flex rounded-4 overflow-hidden" href="assets/img/shop/furniture/product/05.jpg" data-glightbox data-gallery="product-gallery">
-                        <span className="hover-effect-target position-absolute top-0 start-0 w-100 h-100 bg-black bg-opacity-25 opacity-0 z-1"></span>
-                        <i className="ci-zoom-in hover-effect-target fs-3 text-white position-absolute top-50 start-50 translate-middle opacity-0 z-2"></i>
-                        <div className="ratio ratio-1x1 hover-effect-target">
-                          <img src="assets/img/shop/furniture/product/05.jpg" alt="Image"/>
-                        </div>
-                      </a>
-                    </div>
-                    <div className="col">
-                      <a className="hover-effect-scale hover-effect-opacity position-relative d-flex rounded-4 overflow-hidden" href="assets/img/shop/furniture/product/06.jpg" data-glightbox data-gallery="product-gallery">
-                        <span className="hover-effect-target position-absolute top-0 start-0 w-100 h-100 bg-black bg-opacity-25 opacity-0 z-1"></span>
-                        <i className="ci-zoom-in hover-effect-target fs-3 text-white position-absolute top-50 start-50 translate-middle opacity-0 z-2"></i>
-                        <div className="ratio ratio-1x1 hover-effect-target">
-                          <img src="assets/img/shop/furniture/product/06.jpg" alt="Image"/>
-                        </div>
-                      </a>
-                    </div>
+                  {selectedProductData?.variants[1]?.attachments?.map((image:any)=>(
+                <div className="col" key={image?.id}>
+                <a className="hover-effect-scale hover-effect-opacity position-relative d-flex rounded-4 overflow-hidden" href={image?.fileUrl} data-glightbox data-gallery="product-gallery">
+                  <i className="ci-zoom-in hover-effect-target fs-3 text-white position-absolute top-50 start-50 translate-middle opacity-0 z-2"></i>
+                  <div className="ratio ratio-1x1 hover-effect-target">
+                    <img src={image?.fileUrl} alt="Image"/>
+                  </div>
+                </a>
+              </div>
+              ))}                    
                   </div>
                 </div>
                 <button type="button" className="btn btn-lg btn-outline-secondary w-100 collapsed d-md-none" data-bs-toggle="collapse" data-bs-target="#morePictures" data-label-collapsed="Show more pictures" data-label-expanded="Show less pictures" aria-expanded="false" aria-controls="morePictures" aria-label="Show / hide pictures">
                   <i className="collapse-toggle-icon ci-chevron-down fs-lg ms-2 me-n2"></i>
                 </button>
-              </div> */}
+              </div>
             </div>
           </div>
 

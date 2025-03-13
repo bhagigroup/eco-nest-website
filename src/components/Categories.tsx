@@ -28,7 +28,7 @@ export const Categories = () =>{
     navigate(`/products?id1=${selectedProductId}`)
   }
     return (        
-        <section className="container py-5 my-2 my-sm-3 mb-md-2 mt-lg-4 my-xl-5">
+        categoryProducts ? <section className="container py-5 my-2 my-sm-3 mb-md-2 mt-lg-4 my-xl-5">
           <div className="overflow-x-auto pt-xxl-3" data-simplebar data-simplebar-auto-hide="false">
             <div className="row flex-nowrap flex-md-wrap justify-content-md-center g-0 gap-4 gap-md-0">
   
@@ -52,6 +52,6 @@ export const Categories = () =>{
              
             </div>
           </div>
-        </section>
+        </section> : <div className="pb-3"></div>
     )
 }

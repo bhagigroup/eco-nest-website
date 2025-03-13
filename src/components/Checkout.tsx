@@ -1,41 +1,86 @@
 import { useEffect, useState } from "react";
 import { Breadcrumbs } from "./generic/Breadcrums"
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { formatPrice } from "../utility/formatCurrency";
 
 export const Checkout = () =>{
-  const params = useParams(); 
-  const productId = params.id1;//get the id from URL 
-  const variantId = params.id2;
-  const userId = params.id3;
+  const [searchParams] = useSearchParams(); 
+  const productId = searchParams.get("id1");//get the id from URL 
+  const variantId = searchParams.get("id2");
+  const userId = searchParams.get("id3");
 
     //import server URL from .env file
     const serverUrl = process.env.REACT_APP_SERVER_URL;  
     //store product data
     const [orderData, setOrderData] = useState<any>();
+    //handle product quantity change
+    const [productQuantity, setProductQuantity]=useState([
+      {pid:"",
+        quantity:1
+       } 
+    ])
+    const handleQuantityChange = async(id:string,delta:number)=>{
+      const updatedProductQuantity = orderData?.map((product:any)=>product?.id === id ?{...product,quantity:product?.quantity+delta}:product);
+    setOrderData(updatedProductQuantity)
+      // try{
+      //   const response = await axios.post(`${serverUrl}/cms/api/v1/order/add-to-cart`,productQuantity)                             
+      // }
+      // catch(err:any){
+      //   console.log("Failed to get data", err?.message)
+      // }
+    }
     //fetch product data
     const handleFetchProductData = async() =>{
-      try{
-        const payload = {
-          "productId": productId,
-          "variantId": variantId,
-          "quantity": 1,
-          "userId":userId,
-          "cartId":""
+      if(productId && variantId && userId){
+        try{
+          const payload = {
+            "productId": productId,
+            "variantId": variantId,
+            "quantity": 1,
+            "userId":userId,
+            "cartId":""
+        }
+          const response = await axios.post(`${serverUrl}/cms/api/v1/order/add-to-cart`,payload)              
+          setOrderData(response?.data)        
+        }
+        catch(err:any){
+          console.log("Failed to get data", err?.message)
+        }
+      }else if(userId){
+        try{
+
+          const response = await axios.get(`${serverUrl}/cms/api/v1/order/get-cart-details/${userId}`)   ;
+          // const response = await axios.get(`${serverUrl}/cms/api/v1/order/get-order-history/${userId}`)               
+          setOrderData(response?.data)        
+        }
+        catch(err:any){
+          console.log("Failed to get data", err?.message)
+        }
       }
-        const response = await axios.post(`${serverUrl}/cms/api/v1/order/add-to-cart`,payload)              
-        setOrderData(response?.data)        
-      }
-      catch(err:any){
-        console.log("Failed to get data", err?.message)
-      }
+      
     }
     
     //actions added in following useeffect hook will be executed, when component mounted
     useEffect(()=>{      
       handleFetchProductData();           
     },[]);
+
+    //handle proceed to checkout
+    const handleProceedToCheckout = async()=>{      
+      try{
+        const payload = {
+          "cartId": "67c8b2735dd06b36460d34c0",
+          "address": null,
+    "paymentMode": "COD",
+    "deliverySlot": null
+      }
+        const response = await axios.post(`${serverUrl}/cms/api/v1/order/place-order`,payload)                           
+      }
+      catch(err:any){
+        console.log("Failed to place order", err?.message)
+      }
+    }
    return (
     <section className="container pb-5 mb-2 mb-md-3 mb-lg-4 mb-xl-5">
         <Breadcrumbs item1="Home" item2="Shop" item3="Cart"/>
@@ -86,14 +131,14 @@ export const Checkout = () =>{
                       <ul className="list-unstyled gap-1 fs-xs mb-0">
                         {/* <li><span className="text-body-secondary">Color:</span> <span className="text-dark-emphasis fw-medium">White</span></li>
                         <li><span className="text-body-secondary">Model:</span> <span className="text-dark-emphasis fw-medium">128GB</span></li> */}
-                        <li className="d-xl-none"><span className="text-body-secondary">Price:</span> <span className="text-dark-emphasis fw-medium">{data?.subTotal}</span></li>
+                        <li className="d-xl-none"><span className="text-body-secondary">Price:</span> <span className="text-dark-emphasis fw-medium">{formatPrice(data?.subTotal)}</span></li>
                       </ul>
                       <div className="count-input rounded-2 d-md-none mt-3">
-                        <button type="button" className="btn btn-sm btn-icon" data-decrement aria-label="Decrement quantity">
+                        <button type="button" className="btn btn-sm btn-icon" onClick={()=>handleQuantityChange(data?.productId,-1)} aria-label="Decrement quantity">
                           <i className="ci-minus"></i>
                         </button>
-                        <input type="number" className="form-control form-control-sm" value="1" readOnly/>
-                        <button type="button" className="btn btn-sm btn-icon" data-increment aria-label="Increment quantity">
+                        <input type="number" className="form-control form-control-sm" value={data?.productId} readOnly/>
+                        <button type="button" className="btn btn-sm btn-icon" onClick={()=>handleQuantityChange(data?.productId,1)} aria-label="Increment quantity">
                           <i className="ci-plus"></i>
                         </button>
                       </div>
@@ -103,11 +148,11 @@ export const Checkout = () =>{
                 <td className="h6 py-3 d-none d-xl-table-cell">{formatPrice(data?.subTotal)}</td>
                 <td className="py-3 d-none d-md-table-cell">
                   <div className="count-input">
-                    <button type="button" className="btn btn-icon" data-decrement aria-label="Decrement quantity">
+                    <button type="button" className="btn btn-icon" onClick={()=>handleQuantityChange(data?.productId,-1)} aria-label="Decrement quantity">
                       <i className="ci-minus"></i>
                     </button>
-                    <input type="number" className="form-control" value="1" readOnly/>
-                    <button type="button" className="btn btn-icon" data-increment aria-label="Increment quantity">
+                    <input type="number" className="form-control" value={data?.productId} readOnly/>
+                    <button type="button" className="btn btn-icon" onClick={()=>handleQuantityChange(data?.productId,1)} disabled={data?.quantity<=1} aria-label="Increment quantity">
                       <i className="ci-plus"></i>
                     </button>
                   </div>
@@ -160,7 +205,7 @@ export const Checkout = () =>{
                   <span className="fs-sm">Estimated total:</span>
                   <span className="h5 mb-0">{formatPrice(orderData?.total)}</span>
                 </div>
-                <a className="btn btn-lg btn-primary w-100" href="checkout-v1-delivery-1.html">
+                <a className="btn btn-lg btn-primary w-100" onClick={handleProceedToCheckout}>
                   Proceed to checkout
                   <i className="ci-chevron-right fs-lg ms-1 me-n1"></i>
                 </a>
