@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import "../styles/HeroBanner.scss";
+import axios from 'axios';
+import { formatPrice } from '../utility/formatCurrency';
 
 interface HeroBannerProps {
   images: string[];
@@ -9,16 +11,41 @@ interface HeroBannerProps {
   price: string[];
 }
 
-export const HeroBanner: React.FC<HeroBannerProps> = ({ images, thumbnails, description, price }) => {
+export const HeroBanner: React.FC<HeroBannerProps> = () => {
+  //import server URL from .env file
+  const serverUrl = process.env.REACT_APP_SERVER_URL;
+  //store product data
+  const [bannerData, setBannerData] = useState<any>();  
+  //fetch banner data
+   const handleFetchProductData = async() =>{
+    try{
+      const payload = {
+        "name": "",
+        "categoryId": "",
+        "subCategoryId": "",
+        "isPopular":"",
+        "isBannerProduct":"true"
+    }
+      const response = await axios.post(`${serverUrl}/cms/api/v1/product/products-by-filter`,payload)              
+      await setBannerData(response?.data)  ;                 
+    }
+    catch(err:any){
+      console.log("Failed to get product data", err?.message)
+    }
+  }    
+  //actions added in following useeffect hook will be executed, when component mounted
+  useEffect(()=>{    
+    handleFetchProductData();       
+  },[]);
+ 
   const [currentIndex, setCurrentIndex] = useState(0);
-
   const handlePrev = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? images.length - 1 : prevIndex - 1));
+    setCurrentIndex((prevIndex) => (prevIndex === 0 ? bannerData?.length - 1 : prevIndex - 1));
     
   };
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === images.length - 1 ? 0 : prevIndex + 1));
+    setCurrentIndex((prevIndex) => (prevIndex === bannerData?.length - 1 ? 0 : prevIndex + 1));
     
   };
 
@@ -39,7 +66,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ images, thumbnails, desc
                       {/* Previous thumbnail image */}
                       <div className="swiper-slide" style={{width: "262px", height: "262px"}}>
                         <div className="ratio ratio-1x1">
-                          <img src={thumbnails[(currentIndex === 0 ? images.length : currentIndex) - 1]} alt="Previous Thumbnail" />
+                          {bannerData ? <img src={bannerData[(currentIndex === 0 ? bannerData?.length : currentIndex) - 1]?.attachments[0]?.fileUrl} alt="Previous Thumbnail"/> : <p>No Data Available</p>}
                         </div>
                       </div>
                     </div>
@@ -76,10 +103,10 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ images, thumbnails, desc
                   }}
                   key={currentIndex} // Forces a re-render on index change
                 >
-                  {images.map((image, index) => (
-                    <SwiperSlide key={index} className='hero-banner'>
+                  {bannerData?.map((product:any) => (
+                    <SwiperSlide key={product?.id} className='hero-banner'>
                       <div className="ratio">
-                        <img src={image} alt={`Slide ${index}`} />
+                        <img src={product?.attachments[0]?.fileUrl} alt={product?.Name} />
                       </div>
                     </SwiperSlide>
                   ))}
@@ -103,7 +130,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ images, thumbnails, desc
                       {/* Next thumbnail image */}
                       <div className="swiper-slide">
                         <div className="ratio ratio-1x1">
-                          <img src={thumbnails[(currentIndex + 1)%images?.length]} alt="Next Thumbnail" />                          
+                          {bannerData ? <img src={bannerData[(currentIndex + 1)%bannerData?.length]?.attachments[0]?.fileUrl} alt="Next Thumbnail" /> : <p>No Data Available</p>}
                         </div>
                       </div>
                     </div>
@@ -115,14 +142,16 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ images, thumbnails, desc
             {/* Linked captions */}
             <div className="swiper" data-swiper='{"allowTouchMove": false, "loop": true, "effect": "fade"}'>
               <div className="swiper-wrapper">
+              {bannerData ?
                 <div className="swiper-slide bg-body-tertiary text-center">
-                  <h3 className="text-secondary-emphasis fs-base fw-normal mb-2">{description[(currentIndex)%images?.length]}</h3>
-                  <p className="h4 mb-4">${price[(currentIndex)%images?.length]}</p>
+                  <h3 className="text-secondary-emphasis fs-base fw-normal mb-2">{bannerData[(currentIndex)%bannerData?.length]?.Description}</h3>
+                  <p className="h4 mb-4">{formatPrice(bannerData[(currentIndex)%bannerData?.length]?.price)}</p>
                   <a className="btn btn-lg btn-dark rounded-pill" href="shop-product-furniture.html">
                     Shop now
                     <i className="ci-chevron-right fs-lg ms-2 me-n2"></i>
                   </a>
-                </div>
+                </div>:<p>No Data Available</p>
+}
                 {/* Add other captions here */}
               </div>
             </div>
