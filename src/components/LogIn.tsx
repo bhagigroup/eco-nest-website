@@ -1,8 +1,10 @@
 import axios from "axios"
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "./generic/useAuth";
 
 const LogIn = () =>{
+  const {login} = useAuth();
 //redirect
 const navigate = useNavigate();
 //import server URL from .env file
@@ -20,10 +22,11 @@ const handleChange = (e:React.ChangeEvent<HTMLInputElement>) =>{
 const handleSubmit = async(e:React.FormEvent) =>{
   e.preventDefault();
   try{      
-    const response = await axios.post(`${serverUrl}/cms/api/v1/order/login`,formData,{
+    const response = await axios.post(`${serverUrl}/cms/auth/login`,formData,{
       withCredentials:true,//important for cookies
     });
-    if(response?.status===200){
+    if(response?.status===200){            
+      login(response?.data?.user?.id, response?.data?.accessToken)
       navigate("/");//redirect to respected page after login
     }                         
   }
@@ -50,7 +53,7 @@ const handleSubmit = async(e:React.FormEvent) =>{
         <h1 className="h2 mt-auto">Welcome back</h1>
         <div className="nav fs-sm mb-4">
           Don't have an account?
-          <Link className="nav-link text-decoration-underline p-0 ms-2" to="/login">Create an account</Link>
+          <Link className="nav-link text-decoration-underline p-0 ms-2" to="/signup">Create an account</Link>
         </div>
 
         {/* Form */}

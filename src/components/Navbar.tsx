@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom"
+import { useAuth } from "./generic/useAuth";
 
 export const Navbar = () =>{
     //router navigate or redirect
@@ -42,8 +43,8 @@ export const Navbar = () =>{
     const handleCheckoutNavigation=()=>{
       let selectedProductId = "";
       let selectedProductId2 = "";
-      let userId = "67b9c5f1e4b3771fff37bfdd";
-      navigate(`/checkout?id1=${selectedProductId}&id2=${selectedProductId2}&id3=${userId}`)
+      const {user}=useAuth();
+      navigate(`/checkout?id1=${selectedProductId}&id2=${selectedProductId2}&id3=${user}`)
     }
     return (
         // Navigation bar (Page header)

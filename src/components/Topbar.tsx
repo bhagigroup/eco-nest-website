@@ -1,6 +1,16 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { useAuth } from "./generic/useAuth";
 
 export const Topbar = () =>{
+  const {logout} = useAuth();
+  //redirect
+const navigate = useNavigate();
+  const handleLogout = ()=>{
+    logout();
+    navigate("/login");
+  }
+  const userId = localStorage.getItem("userId");
+  
     return (        
         <div className="container position-relative d-flex justify-content-between z-1 py-3">
           <div className="nav animate-underline">
@@ -15,11 +25,18 @@ export const Topbar = () =>{
             <li className="animate-underline">
               <a className="nav-link animate-target fs-xs p-0" href="#!">Account</a>
             </li>
-            <li className="animate-underline">
+            {userId ?  null : <><li className="animate-underline">
               <Link className="nav-link animate-target fs-xs p-0" to="/login">Login</Link>
             </li>
             <li className="animate-underline">
               <Link className="nav-link animate-target fs-xs p-0" to="/signup">Signup</Link>
+            </li></>}
+            
+            <li className="animate-underline">
+              <Link className="nav-link animate-target fs-xs p-0" to="/account-orders">Orders</Link>
+            </li>
+            <li className="animate-underline">
+              <span className="nav-link animate-target fs-xs p-0" onClick={handleLogout}>Logout</span>
             </li>
           </ul>
         </div>

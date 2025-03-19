@@ -1,28 +1,40 @@
 import { useEffect, useState } from "react";
 import { Breadcrumbs } from "./generic/Breadcrums"
 import axios from "axios";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { formatPrice } from "../utility/formatCurrency";
 
+//product quantity data types
+interface ItemList{
+  productId:string;
+  orderQuantity:number;
+}
+interface ProductQuantity{
+  id:string;
+  itemList:ItemList;
+  userId:string;
+}
 export const Checkout = () =>{
   const [searchParams] = useSearchParams(); 
   const productId = searchParams.get("id1");//get the id from URL 
   const variantId = searchParams.get("id2");
   const userId = searchParams.get("id3");
 
+  //store updated product quantity
+  const [updatedProductQuantity, setUpdatedProductQuantity] = useState<ProductQuantity>();
     //import server URL from .env file
     const serverUrl = process.env.REACT_APP_SERVER_URL;  
     //store product data
     const [orderData, setOrderData] = useState<any>();
     //handle product quantity change
-    const [productQuantity, setProductQuantity]=useState([
-      {pid:"",
-        quantity:1
-       } 
-    ])
     const handleQuantityChange = async(id:string,delta:number)=>{
-      const updatedProductQuantity = orderData?.map((product:any)=>product?.id === id ?{...product,quantity:product?.quantity+delta}:product);
-    setOrderData(updatedProductQuantity)
+      const updatedProductQuantity = orderData?.itemList?.map((product:any)=>product?.productId === id ?
+      {...product,orderQuantity:product?.orderQuantity+delta}:product);          
+    setOrderData((prevState:any)=>({...prevState, itemList:updatedProductQuantity}))
+    //save updated products
+    // setUpdatedProductQuantity((prev)=>{
+    //   const existing = prev.find((ext)=>ext?.id===id)
+    // });
       // try{
       //   const response = await axios.post(`${serverUrl}/cms/api/v1/order/add-to-cart`,productQuantity)                             
       // }
@@ -65,7 +77,7 @@ export const Checkout = () =>{
     useEffect(()=>{      
       handleFetchProductData();           
     },[]);
-
+    const navigate = useNavigate();
     //handle proceed to checkout
     const handleProceedToCheckout = async()=>{      
       try{
@@ -75,7 +87,8 @@ export const Checkout = () =>{
     "paymentMode": "COD",
     "deliverySlot": null
       }
-        const response = await axios.post(`${serverUrl}/cms/api/v1/order/place-order`,payload)                           
+        const response = await axios.post(`${serverUrl}/cms/api/v1/order/place-order`,payload)
+        response?.status === 200 && navigate(`/account-orders`);                       
       }
       catch(err:any){
         console.log("Failed to place order", err?.message)
@@ -134,10 +147,10 @@ export const Checkout = () =>{
                         <li className="d-xl-none"><span className="text-body-secondary">Price:</span> <span className="text-dark-emphasis fw-medium">{formatPrice(data?.subTotal)}</span></li>
                       </ul>
                       <div className="count-input rounded-2 d-md-none mt-3">
-                        <button type="button" className="btn btn-sm btn-icon" onClick={()=>handleQuantityChange(data?.productId,-1)} aria-label="Decrement quantity">
+                        <button type="button" className="btn btn-sm btn-icon" onClick={()=>handleQuantityChange(data?.productId,-1)} disabled={data?.orderQuantity<=1} aria-label="Decrement quantity">
                           <i className="ci-minus"></i>
                         </button>
-                        <input type="number" className="form-control form-control-sm" value={data?.productId} readOnly/>
+                        <input type="number" className="form-control form-control-sm" value={data?.orderQuantity} readOnly/>
                         <button type="button" className="btn btn-sm btn-icon" onClick={()=>handleQuantityChange(data?.productId,1)} aria-label="Increment quantity">
                           <i className="ci-plus"></i>
                         </button>
@@ -148,11 +161,11 @@ export const Checkout = () =>{
                 <td className="h6 py-3 d-none d-xl-table-cell">{formatPrice(data?.subTotal)}</td>
                 <td className="py-3 d-none d-md-table-cell">
                   <div className="count-input">
-                    <button type="button" className="btn btn-icon" onClick={()=>handleQuantityChange(data?.productId,-1)} aria-label="Decrement quantity">
+                    <button type="button" className="btn btn-icon" onClick={()=>handleQuantityChange(data?.productId,-1)} disabled={data?.orderQuantity<=1} aria-label="Decrement quantity">
                       <i className="ci-minus"></i>
                     </button>
-                    <input type="number" className="form-control" value={data?.productId} readOnly/>
-                    <button type="button" className="btn btn-icon" onClick={()=>handleQuantityChange(data?.productId,1)} disabled={data?.quantity<=1} aria-label="Increment quantity">
+                    <input type="number" className="form-control" value={data?.orderQuantity} readOnly/>
+                    <button type="button" className="btn btn-icon" onClick={()=>handleQuantityChange(data?.productId,1)} aria-label="Increment quantity">
                       <i className="ci-plus"></i>
                     </button>
                   </div>

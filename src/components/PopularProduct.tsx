@@ -43,6 +43,9 @@ export const PopularProducts = () =>{
      const handleNavigation=(selectedProductId:string)=>{
       navigate(`/shop-product/${selectedProductId}`)
     }
+    const handleViewAllNavigation=()=>{
+      navigate(`/products?isPopular=${true}`)
+    }
     return (
         <section className="container pb-5 mt-md-n2 mb-2 mb-sm-3 mb-md-4 mb-xl-5">
 
@@ -50,7 +53,7 @@ export const PopularProducts = () =>{
         <div className="d-flex align-items-center justify-content-between border-bottom pb-3 pb-md-4">
           <h2 className="h3 mb-0">Popular products</h2>
           <div className="nav ms-3">
-            <a className="nav-link animate-underline px-0 py-2" href="shop-catalog-furniture.html">
+            <a className="nav-link animate-underline px-0 py-2" onClick={handleViewAllNavigation}>
               <span className="animate-target">View all</span>
               <i className="ci-chevron-right fs-base ms-1"></i>
             </a>

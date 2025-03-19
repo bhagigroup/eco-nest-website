@@ -11,7 +11,7 @@ export const Products = () =>{
   const [searchParams] = useSearchParams(); 
   const selectedCategoryId = searchParams.get("id1");//get the id from URL 
   const selectedCategoryId2 = searchParams.get("id2");
-
+  const isPopular = searchParams.get("isPopular");
     //import server URL from .env file
     const serverUrl = process.env.REACT_APP_SERVER_URL;  
     //store product data
@@ -32,10 +32,28 @@ export const Products = () =>{
         console.log("Failed to get product data", err?.message)
       }
     }    
+    const handleFetchPopularProductData = async() =>{
+      try{
+        const payload = {
+          "name": "",
+          "categoryId": "",
+          "subCategoryId": "",
+          "isPopular":"true"
+      }
+        const response = await axios.post(`${serverUrl}/cms/api/v1/product/products-by-filter`,payload)              
+        await setSelectedProductData(response?.data)  
+             
+      }
+      catch(err:any){
+        console.log("Failed to get product data", err?.message)
+      }
+    }    
     //actions added in following useeffect hook will be executed, when component mounted
     useEffect(()=>{
       if(selectedCategoryId){
       handleFetchProductData();   
+      }else if(isPopular){
+        handleFetchPopularProductData();
       }     
     },[selectedCategoryId]);
     const handleNavigation=(selectedProductId:string)=>{
@@ -55,10 +73,10 @@ export const Products = () =>{
         {selectedProductData ? selectedProductData?.map((product:any)=>(<div className="col">
           
             <div className="animate-underline mb-sm-2" key={product?.id}>
-            <Link className={`${product.attachments[1]?.fileUrl ? "hover-effect-opacity" : null} ratio ratio-1x1 d-block mb-3`} to="/shop-product">
+            <a className={`${product.attachments[1]?.fileUrl ? "hover-effect-opacity" : null} ratio ratio-1x1 d-block mb-3`} onClick={()=>handleNavigation(product?.id)}>
               <img src={product.attachments[0]?.fileUrl} className="hover-effect-target opacity-100" alt="Product"/>
               <img src={product.attachments[1]?.fileUrl} className="position-absolute top-0 start-0 hover-effect-target opacity-0 rounded-4" alt="Room"/>
-            </Link>
+            </a>
             <div className="d-flex gap-2 mb-3">
               <input type="radio" className="btn-check" name="colors-1" id="color-1-1" checked/>
               <label htmlFor="color-1-1" className="btn btn-color fs-base" style={{color: "#32808e"}}>
