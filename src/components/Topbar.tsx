@@ -9,7 +9,7 @@ const navigate = useNavigate();
     logout();
     navigate("/login");
   }
-  const userId = localStorage.getItem("userId");
+  const {user}=useAuth();
   
     return (        
         <div className="container position-relative d-flex justify-content-between z-1 py-3">
@@ -25,19 +25,20 @@ const navigate = useNavigate();
             <li className="animate-underline">
               <a className="nav-link animate-target fs-xs p-0" href="#!">Account</a>
             </li>
-            {userId ?  null : <><li className="animate-underline">
+            <li className="animate-underline">
+              <Link className="nav-link animate-target fs-xs p-0" to="/account-orders">Orders</Link>
+            </li>
+            {user ?  <li className="animate-underline">
+              <span className="nav-link animate-target fs-xs p-0" onClick={handleLogout}>Logout</span>
+            </li> : <><li className="animate-underline">
               <Link className="nav-link animate-target fs-xs p-0" to="/login">Login</Link>
             </li>
             <li className="animate-underline">
               <Link className="nav-link animate-target fs-xs p-0" to="/signup">Signup</Link>
             </li></>}
             
-            <li className="animate-underline">
-              <Link className="nav-link animate-target fs-xs p-0" to="/account-orders">Orders</Link>
-            </li>
-            <li className="animate-underline">
-              <span className="nav-link animate-target fs-xs p-0" onClick={handleLogout}>Logout</span>
-            </li>
+     
+            
           </ul>
         </div>
     )

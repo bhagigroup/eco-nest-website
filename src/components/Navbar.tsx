@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { useAuth } from "./generic/useAuth";
 
 export const Navbar = () =>{
+  const {user}=useAuth();
     //router navigate or redirect
     const navigate = useNavigate();
       //import server URL from .env file
@@ -42,8 +43,7 @@ export const Navbar = () =>{
           //handle cart Navigation
     const handleCheckoutNavigation=()=>{
       let selectedProductId = "";
-      let selectedProductId2 = "";
-      const {user}=useAuth();
+      let selectedProductId2 = "";      
       navigate(`/checkout?id1=${selectedProductId}&id2=${selectedProductId2}&id3=${user}`)
     }
     return (

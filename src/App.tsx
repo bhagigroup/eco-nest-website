@@ -19,20 +19,20 @@ const {user} = useAuth();
   return (
     <div className="App"> 
    
-    {user && <><Topbar/><Navbar/></>}
+    {<><Topbar/><Navbar/></>}
           
       <Routes>
-        <Route path="/" element={<ProtectedRoute><Home/></ProtectedRoute>}/>
+        <Route path="/" element={<Home/>}/>
         <Route path="/signup" element={<SignUp/>}/>
         <Route path="/login" element={<LogIn/>}/>
         <Route path="/products" element={<Products/>}/>
         <Route path="/shop-product/:id1" element={<ShopProduct/>}/>
-        <Route path="/checkout" element={<ProtectedRoute><Checkout/></ProtectedRoute>}/>
-        <Route path="/account-orders" element={<ProtectedRoute><AccountOrders/></ProtectedRoute>}/>
+        <Route path="/checkout" element={user ? <ProtectedRoute><Checkout/></ProtectedRoute>:<LogIn/>}/>
+        <Route path="/account-orders" element={user ? <ProtectedRoute><AccountOrders/></ProtectedRoute>:<LogIn/>}/>
         <Route path="*" element={<h2>404 - Page Not Found</h2>}/>
       </Routes>                     
       
-      {user && <Footer/>}
+      {<Footer/>}
       
       
   

@@ -3,7 +3,7 @@ import { useAuth } from "./components/generic/useAuth"
 
 const ProtectedRoute = ({children}:{children:any})=>{    
     const {user}=useAuth();
-    return user ? children :<Navigate to="/login"/>;
+    return user ? children :<Navigate to="/"/>;
 }
 
 export default ProtectedRoute;
