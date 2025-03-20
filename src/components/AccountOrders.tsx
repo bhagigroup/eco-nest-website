@@ -1,17 +1,18 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { formatPrice } from "../utility/formatCurrency";
+import { useAuth } from "./generic/useAuth";
 
 const AccountOrders = () =>{
     //import server URL from .env file
     const serverUrl = process.env.REACT_APP_SERVER_URL;  
     //store product data
     const [orderHistoryData, setOrderHistoryData] = useState<any>();
-    const userId = localStorage.getItem("userId");
+    const {user} = useAuth();
     //fetch product data
     const handleFetchOrderDetails = async() =>{
       try{       
-        const response = await axios.get(`${serverUrl}/cms/api/v1/order/get-order-history/${userId}`)              
+        const response = await axios.get(`${serverUrl}/cms/api/v1/order/get-order-history/${user}`)              
         setOrderHistoryData(response?.data?.data)        
       }
       catch(err:any){

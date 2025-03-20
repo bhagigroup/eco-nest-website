@@ -14,6 +14,12 @@ interface ProductQuantity{
   itemList:ItemList;
   userId:string;
 }
+
+declare global{
+  interface Window{
+    Razorpay:any;
+  }
+}
 export const Checkout = () =>{
   const [searchParams] = useSearchParams(); 
   const productId = searchParams.get("id1");//get the id from URL 
@@ -81,10 +87,34 @@ export const Checkout = () =>{
     //handle proceed to checkout
     const handleProceedToCheckout = async()=>{      
       try{
+await fetch(`${serverUrl}/cms/api/v1/order/create-order?amount=1000&currency=INR`, {
+  method: 'POST'
+})
+  .then(response => response.json())
+  .then(order => {
+      const options = {
+          key: "rzp_test_IbLXsFqHioZSwO", // Replace with your Razorpay API Key
+          amount: order.amount, // Amount in paise
+          currency: order.currency,
+          name: "Your Company",
+          description: "Test Transaction",
+          order_id: order.id,
+          handler: function (response:any) {
+              alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
+          },
+          theme: {
+              color: "#3399cc"
+          }
+      };
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+  })
+  .catch(err => console.error(err));
+
         const payload = {
-          "cartId": "67c8b2735dd06b36460d34c0",
+          "cartId": orderData?.id,          
           "address": null,
-    "paymentMode": "COD",
+    "paymentMode": "online",
     "deliverySlot": null
       }
         const response = await axios.post(`${serverUrl}/cms/api/v1/order/place-order`,payload)
@@ -94,6 +124,8 @@ export const Checkout = () =>{
         console.log("Failed to place order", err?.message)
       }
     }
+
+    
    return (
     <section className="container pb-5 mb-2 mb-md-3 mb-lg-4 mb-xl-5">
         <Breadcrumbs item1="Home" item2="Shop" item3="Cart"/>
