@@ -6,7 +6,11 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { formatPrice } from '../utility/formatCurrency';
-export const PopularProducts = () =>{
+interface Payload{
+  isPopular:string;
+  isBestProducts:string;
+}
+export const PopularProducts:React.FC<Payload> = ({isPopular, isBestProducts}) =>{
    //router navigate or redirect
    const navigate = useNavigate();
   //  const [searchParams] = useSearchParams(); 
@@ -24,7 +28,8 @@ export const PopularProducts = () =>{
            "name": "",
            "categoryId": "",
            "subCategoryId": "",
-           "isPopular":"true"
+           "isPopular":isPopular,
+          "isBestProducts":isBestProducts
        }
          const response = await axios.post(`${serverUrl}/cms/api/v1/product/products-by-filter`,payload)              
          await setPopularProductsData(response?.data)  
@@ -44,14 +49,14 @@ export const PopularProducts = () =>{
       navigate(`/shop-product/${selectedProductId}`)
     }
     const handleViewAllNavigation=()=>{
-      navigate(`/products?isPopular=${true}`)
+      navigate(`/products?${isPopular ==="true" ? "isPopular=true": "isBestProducts=true"}`)
     }
     return (
         <section className="container pb-5 mt-md-n2 mb-2 mb-sm-3 mb-md-4 mb-xl-5">
 
         {/* Heading */}
         <div className="d-flex align-items-center justify-content-between border-bottom pb-3 pb-md-4">
-          <h2 className="h3 mb-0">Popular products</h2>
+          <h2 className="h3 mb-0">{isPopular ? "Popular products" : "Best Products"}</h2>
           <div className="nav ms-3">
             <a className="nav-link animate-underline px-0 py-2" onClick={handleViewAllNavigation}>
               <span className="animate-target">View all</span>
@@ -88,15 +93,15 @@ export const PopularProducts = () =>{
                     <img src={product?.attachments[1]?.fileUrl} className="position-absolute top-0 start-0 hover-effect-target opacity-0 rounded-4" alt={product?.Name}/>
                   </a>
                   <div className="d-flex gap-2 mb-3">
-                    <input type="radio" className="btn-check" name="colors-4" id="color-4-1" checked/>
+                    <input type="radio" className="btn-check" name="colors-4" id="color-4-1" checked readOnly/>
                     <label htmlFor="color-4-1" className="btn btn-color fs-base" style={{color: "#384043"}}>
                       <span className="visually-hidden">Dark gray</span>
                     </label>
-                    <input type="radio" className="btn-check" name="colors-4" id="color-4-2"/>
+                    <input type="radio" className="btn-check" name="colors-4" id="color-4-2" readOnly/>
                     <label htmlFor="color-4-2" className="btn btn-color fs-base" style={{color: "#bdc5da"}}>
                       <span className="visually-hidden">Light gray</span>
                     </label>
-                    <input type="radio" className="btn-check" name="colors-4" id="color-4-3"/>
+                    <input type="radio" className="btn-check" name="colors-4" id="color-4-3" readOnly/>
                     <label htmlFor="color-4-3" className="btn btn-color fs-base" style={{color: "#526f99"}}>
                       <span className="visually-hidden">Bluish gray</span>
                     </label>

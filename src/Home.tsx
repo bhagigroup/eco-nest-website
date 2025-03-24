@@ -7,7 +7,8 @@ const Home = () =>{
         <>
         <HeroBanner images={swiperImages} thumbnails={swiperThumbnails} description={swiperDescription} price={swiperPrice}/>
         <Categories/>
-        <PopularProducts/>
+        <PopularProducts isBestProducts='' isPopular='true'/>
+        <PopularProducts isBestProducts='true' isPopular=''/>
         </>
     )
 }

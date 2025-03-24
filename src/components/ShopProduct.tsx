@@ -243,7 +243,7 @@ export const ShopProduct = () =>{
         </section>     
             </div>
                {/* Popular prodducts */}
-        <PopularProducts/>
+        <PopularProducts isPopular="" isBestProducts="true"/>
         </main>
         
     )

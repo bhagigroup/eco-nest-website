@@ -3,6 +3,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import "../styles/HeroBanner.scss";
 import axios from 'axios';
 import { formatPrice } from '../utility/formatCurrency';
+import { useNavigate } from 'react-router-dom';
 
 interface HeroBannerProps {
   images: string[];
@@ -12,6 +13,8 @@ interface HeroBannerProps {
 }
 
 export const HeroBanner: React.FC<HeroBannerProps> = () => {
+    //router navigate or redirect
+    const navigate = useNavigate();
   //import server URL from .env file
   const serverUrl = process.env.REACT_APP_SERVER_URL;
   //store product data
@@ -48,7 +51,10 @@ export const HeroBanner: React.FC<HeroBannerProps> = () => {
     setCurrentIndex((prevIndex) => (prevIndex === bannerData?.length - 1 ? 0 : prevIndex + 1));
     
   };
-
+//shop product
+  const handleNavigation=(selectedProductId:string)=>{
+    navigate(`/shop-product/${selectedProductId}`)
+  }
   return (
         <section className="bg-body-tertiary min-vh-100 d-flex align-items-center overflow-hidden" style={{ marginTop: '-110px', paddingTop: '110px' }}>
           <div className="container h-100 py-5 my-md-2 my-lg-3 my-xl-4 mb-xxl-5">
@@ -146,10 +152,10 @@ export const HeroBanner: React.FC<HeroBannerProps> = () => {
                 <div className="swiper-slide bg-body-tertiary text-center">
                   <h3 className="text-secondary-emphasis fs-base fw-normal mb-2">{bannerData[(currentIndex)%bannerData?.length]?.Description}</h3>
                   <p className="h4 mb-4">{formatPrice(bannerData[(currentIndex)%bannerData?.length]?.price)}</p>
-                  <a className="btn btn-lg btn-dark rounded-pill" href="shop-product-furniture.html">
+                  <p className="btn btn-lg btn-dark rounded-pill" onClick={()=>handleNavigation(bannerData[(currentIndex)%bannerData?.length]?.id)}>
                     Shop now
                     <i className="ci-chevron-right fs-lg ms-2 me-n2"></i>
-                  </a>
+                  </p>
                 </div>:<p>No Data Available</p>
 }
                 {/* Add other captions here */}

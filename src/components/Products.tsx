@@ -12,6 +12,7 @@ export const Products = () =>{
   const selectedCategoryId = searchParams.get("id1");//get the id from URL 
   const selectedCategoryId2 = searchParams.get("id2");
   const isPopular = searchParams.get("isPopular");
+  const isBestProducts = searchParams.get("isBestProducts");
     //import server URL from .env file
     const serverUrl = process.env.REACT_APP_SERVER_URL;  
     //store product data
@@ -38,7 +39,8 @@ export const Products = () =>{
           "name": "",
           "categoryId": "",
           "subCategoryId": "",
-          "isPopular":"true"
+          "isBestProducts":isBestProducts === "true"? "true":"",
+          "isPopular":isPopular==="true" ? "true" : ""
       }
         const response = await axios.post(`${serverUrl}/cms/api/v1/product/products-by-filter`,payload)              
         await setSelectedProductData(response?.data)  
@@ -52,7 +54,7 @@ export const Products = () =>{
     useEffect(()=>{
       if(selectedCategoryId){
       handleFetchProductData();   
-      }else if(isPopular){
+      }else if(isPopular || isBestProducts){
         handleFetchPopularProductData();
       }     
     },[selectedCategoryId]);
@@ -78,7 +80,7 @@ export const Products = () =>{
               <img src={product.attachments[1]?.fileUrl} className="position-absolute top-0 start-0 hover-effect-target opacity-0 rounded-4" alt="Room"/>
             </a>
             <div className="d-flex gap-2 mb-3">
-              <input type="radio" className="btn-check" name="colors-1" id="color-1-1" checked/>
+              <input type="radio" className="btn-check" name="colors-1" id="color-1-1" checked readOnly/>
               <label htmlFor="color-1-1" className="btn btn-color fs-base" style={{color: "#32808e"}}>
                 <span className="visually-hidden">Emerald</span>
               </label>

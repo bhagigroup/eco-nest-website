@@ -26,14 +26,14 @@ export const Filters = () =>{
               <div className="dropdown-menu w-100 p-3">
                 <div className="d-flex flex-column gap-2">
                   <div className="form-check m-0">
-                    <input type="checkbox" className="form-check-input fs-base" id="living-room" checked onClick={()=>updateFilterCount('categoryCount')} data-count-id="categoryCount"/>
+                    <input type="checkbox" className="form-check-input fs-base" id="living-room" checked readOnly onClick={()=>updateFilterCount('categoryCount')} data-count-id="categoryCount"/>
                     <label htmlFor="living-room" className="form-check-label d-flex align-items-end">
                       Living room
                       <span className="fs-xs text-body-secondary ps-2 ms-auto">657</span>
                     </label>
                   </div>
                   <div className="form-check m-0">
-                    <input type="checkbox" className="form-check-input fs-base" id="bedroom" checked onClick={()=>updateFilterCount('categoryCount')} data-count-id="categoryCount"/>
+                    <input type="checkbox" className="form-check-input fs-base" id="bedroom" checked readOnly onClick={()=>updateFilterCount('categoryCount')} data-count-id="categoryCount"/>
                     <label htmlFor="bedroom" className="form-check-label d-flex align-items-end">
                       Bedroom
                       <span className="fs-xs text-body-secondary ps-2 ms-auto">528</span>
@@ -54,7 +54,7 @@ export const Filters = () =>{
                     </label>
                   </div>
                   <div className="form-check m-0">
-                    <input type="checkbox" className="form-check-input fs-base" id="lighting" checked onClick={()=>updateFilterCount('categoryCount')} data-count-id="categoryCount"/>
+                    <input type="checkbox" className="form-check-input fs-base" id="lighting" checked readOnly onClick={()=>updateFilterCount('categoryCount')} data-count-id="categoryCount"/>
                     <label htmlFor="lighting" className="form-check-label d-flex align-items-end">
                       Lighting
                       <span className="fs-xs text-body-secondary ps-2 ms-auto">395</span>
@@ -68,7 +68,7 @@ export const Filters = () =>{
                     </label>
                   </div>
                   <div className="form-check m-0">
-                    <input type="checkbox" className="form-check-input fs-base" id="accessories" checked onClick={()=>updateFilterCount('categoryCount')} data-count-id="categoryCount"/>
+                    <input type="checkbox" className="form-check-input fs-base" id="accessories" checked readOnly onClick={()=>updateFilterCount('categoryCount')} data-count-id="categoryCount"/>
                     <label htmlFor="accessories" className="form-check-label d-flex align-items-end">
                       Accessories
                       <span className="fs-xs text-body-secondary ps-2 ms-auto">190</span>

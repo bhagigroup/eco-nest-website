@@ -19,7 +19,7 @@ const {user} = useAuth();
   return (
     <div className="App"> 
    
-    {<><Topbar/><Navbar/></>}
+    {user && <><Topbar/><Navbar/></>}
           
       <Routes>
         <Route path="/" element={<Home/>}/>
@@ -32,7 +32,7 @@ const {user} = useAuth();
         <Route path="*" element={<h2>404 - Page Not Found</h2>}/>
       </Routes>                     
       
-      {<Footer/>}
+      {user && <Footer/>}
       
       
   
