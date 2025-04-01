@@ -121,7 +121,7 @@ export const PopularProducts:React.FC<Payload> = ({isPopular, isBestProducts}) =
                 </div>
               </div>
                                     </SwiperSlide>
-                                  )):<p>No data available</p>}
+                                  )):<p className="no-data">No Data Available</p>}
                    
             
             </Swiper>

@@ -4,7 +4,7 @@ import { Navbar } from './components/Navbar';
 import { Topbar } from './components/Topbar';
 import { Footer } from './components/Footer';
 import { Products } from './components/Products';
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes, useLocation } from 'react-router-dom';
 import { ShopProduct } from './components/ShopProduct';
 import { Checkout } from './components/Checkout';
 import SignUp from './components/SignUp';
@@ -13,13 +13,16 @@ import AccountOrders from './components/AccountOrders';
 import { useAuth } from './components/generic/useAuth';
 import ProtectedRoute from './ProtectedRoute';
 import Home from './Home';
+import ScrollToTop from './components/ScrollToTop';
 function App() {
   
 const {user} = useAuth();
+const location = useLocation();
+const hideNavbarFooter = location.pathname==="/login" || location.pathname==="/signup";
   return (
     <div className="App"> 
-   
-    {user && <><Topbar/><Navbar/></>}
+   <ScrollToTop/>
+    {!hideNavbarFooter && <><Topbar/><Navbar/></>}
           
       <Routes>
         <Route path="/" element={<Home/>}/>
@@ -32,7 +35,7 @@ const {user} = useAuth();
         <Route path="*" element={<h2>404 - Page Not Found</h2>}/>
       </Routes>                     
       
-      {user && <Footer/>}
+      {!hideNavbarFooter && <Footer/>}
       
       
   

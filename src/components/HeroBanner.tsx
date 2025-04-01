@@ -72,7 +72,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = () => {
                       {/* Previous thumbnail image */}
                       <div className="swiper-slide" style={{width: "262px", height: "262px"}}>
                         <div className="ratio ratio-1x1">
-                          {bannerData ? <img src={bannerData[(currentIndex === 0 ? bannerData?.length : currentIndex) - 1]?.attachments[0]?.fileUrl} alt="Previous Thumbnail"/> : <p>No Data Available</p>}
+                          {bannerData ? <img src={bannerData[(currentIndex === 0 ? bannerData?.length : currentIndex) - 1]?.attachments[0]?.fileUrl} alt="Previous Thumbnail"/> : <p className="no-data">No Data Available</p>}
                         </div>
                       </div>
                     </div>
@@ -89,7 +89,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = () => {
     
               {/* Main slider */}
               <div className="col-sm-10 col-lg-8 col-xl-6 order-3">
-                <Swiper
+                {bannerData ? <Swiper
                   loop={true}
                   grabCursor={true}
                   speed={600}
@@ -116,7 +116,8 @@ export const HeroBanner: React.FC<HeroBannerProps> = () => {
                       </div>
                     </SwiperSlide>
                   ))}
-                </Swiper>
+                </Swiper> : <p className='no-data'>No Data Available</p>}
+                
               </div>
     
               {/* Next button */}
@@ -136,7 +137,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = () => {
                       {/* Next thumbnail image */}
                       <div className="swiper-slide">
                         <div className="ratio ratio-1x1">
-                          {bannerData ? <img src={bannerData[(currentIndex + 1)%bannerData?.length]?.attachments[0]?.fileUrl} alt="Next Thumbnail" /> : <p>No Data Available</p>}
+                          {bannerData ? <img src={bannerData[(currentIndex + 1)%bannerData?.length]?.attachments[0]?.fileUrl} alt="Next Thumbnail" /> : <p className="no-data">No Data Available</p>}
                         </div>
                       </div>
                     </div>
@@ -148,7 +149,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = () => {
             {/* Linked captions */}
             <div className="swiper" data-swiper='{"allowTouchMove": false, "loop": true, "effect": "fade"}'>
               <div className="swiper-wrapper">
-              {bannerData ?
+              {bannerData &&
                 <div className="swiper-slide bg-body-tertiary text-center">
                   <h3 className="text-secondary-emphasis fs-base fw-normal mb-2">{bannerData[(currentIndex)%bannerData?.length]?.Description}</h3>
                   <p className="h4 mb-4">{formatPrice(bannerData[(currentIndex)%bannerData?.length]?.price)}</p>
@@ -156,7 +157,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = () => {
                     Shop now
                     <i className="ci-chevron-right fs-lg ms-2 me-n2"></i>
                   </p>
-                </div>:<p>No Data Available</p>
+                </div>
 }
                 {/* Add other captions here */}
               </div>

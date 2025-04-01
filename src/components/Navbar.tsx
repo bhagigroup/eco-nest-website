@@ -101,7 +101,7 @@ export const Navbar = () =>{
                    </div>
                  </div>
                </li>
-                 )): <p>No data available</p>}
+                 )): <p className="no-data">No Data Available</p>}
               
            
                 </ul>

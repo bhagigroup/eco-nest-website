@@ -14,7 +14,7 @@ export const Filters = () =>{
                 }
               }' aria-label="Sorting">
                 <option value="">Sort by</option>
-                <option value="popular" selected>Most popular</option>
+                <option value="popular">Most popular</option>
                 <option value="match">Best match</option>
                 <option value="new">New arrivals</option>
                 <option value="price-asc">Price ascending</option>
